@@ -8,13 +8,14 @@ public class SwipeController : MonoBehaviour
     private InputController inputController;
 
     [SerializeField]
+    private GameObject trailPrefab;
+    
     private GameObject trailGameObject;
 
-    TrailRenderer trailRenderer;
+    private TrailRenderer trailRenderer;
 
     void Awake()
     {
-        trailRenderer = trailGameObject.GetComponent<TrailRenderer>();
         inputController.StartedTouch += InputControllerOnStartedTouch;
         inputController.StoppedTouch += InputControllerOnStoppedTouch;
     }
@@ -27,24 +28,23 @@ public class SwipeController : MonoBehaviour
 
     private void InputControllerOnStartedTouch(Vector2 position)
     {
-        trailGameObject.transform.position = position;
-        trailGameObject.SetActive(true);
-        
-        trailRenderer.Clear();
-        
+        trailGameObject = Instantiate(trailPrefab, position, Quaternion.identity);
+        trailGameObject.transform.position = inputController.PrimaryPosition;
+        trailRenderer = trailGameObject.GetComponent<TrailRenderer>();
+        trailRenderer.widthMultiplier = 0.05f;
         StartCoroutine(Trail());
     }
 
     private void InputControllerOnStoppedTouch(Vector2 position)
     {
-        trailGameObject.SetActive(false);
+        Destroy(trailGameObject);
+        trailGameObject = null;
     }
     
     private IEnumerator Trail()
     {
-        while (trailGameObject.activeSelf)
+        while (trailGameObject != null)
         {
-            Debug.Log($"loop {inputController.PrimaryPosition}");
             trailGameObject.transform.position = inputController.PrimaryPosition;
             yield return null;
         }
