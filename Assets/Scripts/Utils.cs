@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public static class Utils
@@ -6,5 +7,17 @@ public static class Utils
     {
         position.z = camera.nearClipPlane + 0.5f;
         return camera.ScreenToWorldPoint(position);
+    }
+
+    public static Vector3? GetWorldPosition(Camera camera, Vector3 position)
+    {
+        var ray = camera.ScreenPointToRay(position);
+
+        if (Physics.Raycast(ray, out var hit))
+        {
+            return hit.point;
+        }
+
+        return null;
     }
 }

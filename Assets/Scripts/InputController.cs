@@ -10,7 +10,7 @@ public class InputController : MonoBehaviour
     
     public event Action<Vector2> StoppedTouch;
 
-    public Vector3 PrimaryPosition => Utils.ScreenToWorld(Camera.main, playerInput.actions["PrimaryPosition"].ReadValue<Vector2>());
+    public Vector2 PrimaryPosition => playerInput.actions["PrimaryPosition"].ReadValue<Vector2>();
 
     // Start is called before the first frame update
     void Awake()
@@ -35,7 +35,7 @@ public class InputController : MonoBehaviour
     
     private void StopTouchPrimary(InputAction.CallbackContext ctx)
     {
-        Debug.Log("Stopped touch primary");
+        Debug.Log($"Stopped touch primary {playerInput.actions["PrimaryPosition"].ReadValue<Vector2>()}");
         StoppedTouch?.Invoke(PrimaryPosition);
     }
 }
