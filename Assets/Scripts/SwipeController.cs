@@ -2,21 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class SwipeController : MonoBehaviour
 {
-    [SerializeField]
-    private InputController inputController;
+    [SerializeField] private InputController inputController;
 
-    [SerializeField]
-    private GameObject trailPrefab;
-    
-    [SerializeField]
-    private GameObject ballGameObject;
+    [SerializeField] private GameObject trailPrefab;
+
+    [SerializeField] private GameObject ballGameObject;
 
     private Ball ball;
-    
+
     private GameObject trailGameObject;
 
     private TrailRenderer trailRenderer;
@@ -42,11 +40,10 @@ public class SwipeController : MonoBehaviour
 
         var trailStartPosition = Utils.ScreenToWorld(Camera.main, inputController.PrimaryPosition);
         trailGameObject = Instantiate(trailPrefab, trailStartPosition, Quaternion.identity);
-        // trailGameObject.transform.position = trailStartPosition;
-        
+
         trailRenderer = trailGameObject.GetComponent<TrailRenderer>();
         trailRenderer.widthMultiplier = 0.05f;
-        
+
         StartCoroutine(Trail());
     }
 
@@ -57,7 +54,7 @@ public class SwipeController : MonoBehaviour
         trailGameObject = null;
         Shoot();
     }
-    
+
     private IEnumerator Trail()
     {
         var mainCamera = Camera.main;
@@ -75,31 +72,33 @@ public class SwipeController : MonoBehaviour
 
     private void Shoot()
     {
+        Debug.Log($"Path count {path.Count}");
         if (path.Count < 3) return;
-        
+
         var startPosition = path[0];
         var endPosition = path[^1];
 
-        var pathOrderedDesc = path.OrderByDescending(p => p.x).ToList();
+        path.RemoveAll(p => p.y > endPosition.y);
+        path.RemoveAll(p => p.y < startPosition.y);
 
-        var rightMostPosition = pathOrderedDesc.First();
-        var leftMostPosition = pathOrderedDesc.Last();
+        const int checkSlopePerItems = 10;
+        var checkPoints = path.Where((_, i) => i % checkSlopePerItems == 0).ToList();
+
+        if (checkPoints.Count < 2) return;
+
+        var furthestPoint = checkPoints
+            .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
+
+        Debug.Log($"Check points {string.Join(',', checkPoints)}");
+        Debug.Log($"Max point{furthestPoint}");
+
+        var curveDirection = (furthestPoint - startPosition).normalized;
+        Debug.Log($"Curve direction {curveDirection}");
+
+        // TODO: height based on the destination
+        var force = new Vector3(curveDirection.x / 2, 0.5f, curveDirection.y) * 900;
         
-        Debug.Log($"Curve diff {rightMostPosition.x} {startPosition.x}");
-
-        var curveLengthRight = Math.Abs(rightMostPosition.x - startPosition.x);
-        var curveLengthLeft = Math.Abs(leftMostPosition.x - startPosition.x);
-
-        var isRightCurve = curveLengthRight > curveLengthLeft;
-
-        var forwardY = isRightCurve ? rightMostPosition.y : leftMostPosition.y;
-        var curveLengthVertical = Math.Abs(startPosition.y - forwardY);
-
-        var curveLengthHorizontal = isRightCurve ? curveLengthRight : -1 * curveLengthLeft;
-        var curveDirection = new Vector3(curveLengthHorizontal / curveLengthVertical, 0, 1);
-        var force = curveDirection * 300;
-        
-        Debug.Log($"End position {endPosition}");
+        Debug.Log($"Force {force}");
 
         var destination = Utils.GetWorldPosition(Camera.main, endPosition);
 
