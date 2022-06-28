@@ -9,11 +9,9 @@ public class SwipeController : MonoBehaviour
 {
     [SerializeField] private InputController inputController;
 
+    [SerializeField] private ShootController shootController;
+
     [SerializeField] private GameObject trailPrefab;
-
-    [SerializeField] private GameObject ballGameObject;
-
-    private Ball ball;
 
     private GameObject trailGameObject;
 
@@ -25,7 +23,6 @@ public class SwipeController : MonoBehaviour
     {
         inputController.StartedTouch += InputControllerOnStartedTouch;
         inputController.StoppedTouch += InputControllerOnStoppedTouch;
-        ball = ballGameObject.GetComponent<Ball>();
     }
 
     private void OnDestroy()
@@ -95,16 +92,12 @@ public class SwipeController : MonoBehaviour
         var curveDirection = (furthestPoint - startPosition).normalized;
         Debug.Log($"Curve direction {curveDirection}");
 
-        // TODO: height based on the destination
-        var force = new Vector3(curveDirection.x / 2, 0.5f, curveDirection.y) * 900;
-        
-        Debug.Log($"Force {force}");
+        var target = Utils.GetWorldPosition(Camera.main, endPosition);
 
-        var destination = Utils.GetWorldPosition(Camera.main, endPosition);
+        if (!target.HasValue) return;
 
-        if (!destination.HasValue) return;
+        Debug.Log($"Target {target}");
 
-        Debug.Log($"End world position {destination}");
-        ball.Shoot(force, destination.Value);
+        shootController.Fire(target.Value);
     }
 }
