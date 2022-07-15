@@ -15,7 +15,7 @@ public class ShootController : MonoBehaviour
         ballGameObject.GetComponent<Ball>().Shoot(velocity); 
     }
 
-    static Vector3 GetVelocity(Vector3 currentPos, Vector3 targetPos, float initialAngle)
+    private static Vector3 GetVelocity(Vector3 currentPos, Vector3 targetPos, float initialAngle)
     {
         var gravity = Physics.gravity.magnitude;
         var angle = initialAngle * Mathf.Deg2Rad;

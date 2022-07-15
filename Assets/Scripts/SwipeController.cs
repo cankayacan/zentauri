@@ -85,18 +85,13 @@ public class SwipeController : MonoBehaviour
 
         var furthestPoint = checkPoints
             .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
-
-        Debug.Log($"Check points {string.Join(',', checkPoints)}");
-        Debug.Log($"Max point{furthestPoint}");
-
+        
         var curveDirection = (furthestPoint - startPosition).normalized;
         Debug.Log($"Curve direction {curveDirection}");
 
         var target = Utils.GetWorldPosition(Camera.main, endPosition);
 
         if (!target.HasValue) return;
-
-        Debug.Log($"Target {target}");
 
         shootController.Fire(target.Value);
     }
