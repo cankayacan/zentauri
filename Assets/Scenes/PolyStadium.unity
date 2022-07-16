@@ -14303,7 +14303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 2145856134}
-  ballPrefab: {fileID: 6818867293696118166, guid: 3b5a65dac01e94ee7adc3269f45f1779,
+  ballPrefab: {fileID: 8730849797983272262, guid: c2ab9bfd17300452998f49e23aab5537,
     type: 3}
 --- !u!114 &1612017389
 MonoBehaviour:
