@@ -12,7 +12,6 @@ public class InputController : MonoBehaviour
 
     public Vector2 PrimaryPosition => playerInput.actions["PrimaryPosition"].ReadValue<Vector2>();
 
-    // Start is called before the first frame update
     void Awake()
     {
         Debug.Log("Input controller");

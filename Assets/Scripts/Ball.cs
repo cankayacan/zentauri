@@ -6,4 +6,17 @@ public class Ball : MonoBehaviour
     {
         GetComponent<Rigidbody>().velocity = velocity;
     }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("GoalDetector"))
+        {
+            BallEventAggregator.Default.PublishGoal();
+        }
+
+        if (other.CompareTag("Out"))
+        {
+            BallEventAggregator.Default.PublishOut();
+        }
+    }
 }

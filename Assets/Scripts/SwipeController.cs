@@ -9,8 +9,6 @@ public class SwipeController : MonoBehaviour
 {
     [SerializeField] private InputController inputController;
 
-    [SerializeField] private ShootController shootController;
-
     [SerializeField] private GameObject trailPrefab;
 
     private GameObject trailGameObject;
@@ -18,6 +16,8 @@ public class SwipeController : MonoBehaviour
     private TrailRenderer trailRenderer;
 
     private List<Vector2> path;
+
+    public event Action<Vector3> Swiped;
 
     void Awake()
     {
@@ -55,6 +55,7 @@ public class SwipeController : MonoBehaviour
     private IEnumerator Trail()
     {
         var mainCamera = Camera.main;
+
         while (trailGameObject != null)
         {
             var position = inputController.PrimaryPosition;
@@ -93,6 +94,6 @@ public class SwipeController : MonoBehaviour
 
         if (!target.HasValue) return;
 
-        shootController.Fire(target.Value);
+        Swiped?.Invoke(target.Value);
     }
 }

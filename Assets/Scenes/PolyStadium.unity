@@ -9690,6 +9690,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1657380740512309795, guid: 7dd31d1dbddf74195a9fd7f193830e63,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3144064842729529798, guid: 7dd31d1dbddf74195a9fd7f193830e63,
         type: 3}
       propertyPath: m_Name
@@ -14302,9 +14307,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3d86d6e14442d58bc8011fa4c199ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 2145856134}
-  ballPrefab: {fileID: 8730849797983272262, guid: c2ab9bfd17300452998f49e23aab5537,
-    type: 3}
 --- !u!114 &1612017389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14318,7 +14320,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputController: {fileID: 1612017390}
-  shootController: {fileID: 1612017388}
   trailPrefab: {fileID: 309988604}
 --- !u!114 &1612017390
 MonoBehaviour:
@@ -19685,12 +19686,12 @@ PrefabInstance:
     - target: {fileID: 8869195958910727557, guid: 7dd31d1dbddf74195a9fd7f193830e63,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8869195958910727557, guid: 7dd31d1dbddf74195a9fd7f193830e63,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8869195958910727557, guid: 7dd31d1dbddf74195a9fd7f193830e63,
         type: 3}
