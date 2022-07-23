@@ -1,6 +1,14 @@
 using System;
 using UnityEngine;
 
+enum PlayerState
+{
+    Idle,
+    Walking,
+    Shooting,
+    WaitingResult
+}
+
 public class Player : MonoBehaviour
 {
     private const int ShootToGoalAngle = 15;
@@ -15,7 +23,7 @@ public class Player : MonoBehaviour
 
     private Animator animator;
 
-    private bool ballInShootingRange;
+    private PlayerState state = PlayerState.Idle;
 
     private BallDetector ballDetector;
 
@@ -36,16 +44,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (!shootTarget.HasValue) return;
-        
-        if (ballInShootingRange) return;
-        
-        animator.SetInteger("Speed", movementSpeed);
-
-        var move = transform.forward * (Time.deltaTime * movementSpeed);
-        characterController.Move(move);
-
-        CheckBallInShootingRange();
+        if (state == PlayerState.Walking)
+        {
+            MovePlayer();
+        }
     }
 
     private void OnDestroy()
@@ -56,7 +58,18 @@ public class Player : MonoBehaviour
 
     private void SwipeControllerOnSwiped(Vector3 target)
     {
+        state = PlayerState.Walking;
         shootTarget = target;
+    }
+
+    private void MovePlayer()
+    {
+        animator.SetInteger("Speed", movementSpeed);
+
+        var move = transform.forward * (Time.deltaTime * movementSpeed);
+        characterController.Move(move);
+
+        CheckBallInShootingRange();
     }
 
     private void CheckBallInShootingRange()
@@ -75,15 +88,16 @@ public class Player : MonoBehaviour
         var distance = (hit.point - transform.position).magnitude;
 
         if (!(distance < 0.6f)) return;
-            
+        
+        state = PlayerState.Shooting;
         animator.SetTrigger("BallKick");
-        ballInShootingRange = true;
     }
 
     private void BallDetectorOnBallTouched(GameObject part, GameObject ballGameObject)
     {
         if (part.CompareTag("BallKickDetector"))
         {
+            state = PlayerState.WaitingResult;
             ShootBall(ballGameObject);
         }
     }
@@ -97,12 +111,12 @@ public class Player : MonoBehaviour
         ball.Shoot(velocity);
 
         animator.SetInteger("Speed", 0);
-        shootTarget = null;
     }
     
     private void OnGoal()
     {
         animator.SetTrigger("Goal");
+        CameraController.Default.Goal();
     }
     
     private void OnOut()
