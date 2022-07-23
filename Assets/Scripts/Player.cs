@@ -27,6 +27,8 @@ public class Player : MonoBehaviour
 
     private BallDetector ballDetector;
 
+    private CameraController cameraController;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -37,6 +39,8 @@ public class Player : MonoBehaviour
 
         ballDetector = GetComponentInChildren<BallDetector>();
         ballDetector.BallTouched += BallDetectorOnBallTouched;
+
+        cameraController = GetComponent<CameraController>();
         
         BallEventAggregator.Default.Goal += OnGoal;
         BallEventAggregator.Default.Out += OnOut;
@@ -54,6 +58,9 @@ public class Player : MonoBehaviour
     {
         swipeController.Swiped -= SwipeControllerOnSwiped;
         ballDetector.BallTouched -= BallDetectorOnBallTouched;
+        
+        BallEventAggregator.Default.Goal -= OnGoal;
+        BallEventAggregator.Default.Out -= OnOut;
     }
 
     private void SwipeControllerOnSwiped(Vector3 target)
@@ -116,7 +123,7 @@ public class Player : MonoBehaviour
     private void OnGoal()
     {
         animator.SetTrigger("Goal");
-        CameraController.Default.Goal();
+        cameraController.Goal();
     }
     
     private void OnOut()

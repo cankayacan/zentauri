@@ -1,17 +1,14 @@
-using System;
 using Cinemachine;
 using UnityEngine;
 
-public class CameraController: Singleton<CameraController>
+public class CameraController: MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera shootingCamera;
     [SerializeField] private CinemachineVirtualCamera goalCamera;
-
-    private bool goal;
-
+    
     private void Update()
     {
-        if (goal)
+        if (goalCamera.Priority == 1)
         {
             MoveGoalCamera();
         }
@@ -21,8 +18,6 @@ public class CameraController: Singleton<CameraController>
     {
         goalCamera.Priority = 1;
         shootingCamera.Priority = 0;
-        
-        goal = true;
     }
 
     private void MoveGoalCamera()

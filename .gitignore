@@ -82,3 +82,6 @@ ProjectSettings/AndroidResolverDependencies.xml
 ProjectSettings/GvhProjectSettings.xml
 ProjectSettings/RiderScriptEditorPersistedState.asset
 ProjectSettings/Packages/com.unity.probuilder
+
+UIElementsSchema
+UnityDefaultRuntimeTheme.tss*
