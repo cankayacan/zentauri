@@ -7,7 +7,6 @@ TagManager:
   - GoalDetector
   - Ball
   - BallKickDetector
-  - BallInRangeDetector
   - Out
   layers:
   - Default
