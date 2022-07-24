@@ -16,11 +16,13 @@ public class GameScreen : MonoBehaviour
         restartButton.RegisterCallback<ClickEvent>(HandleRestartButtonClick);
 
         BallEventAggregator.Default.Goal += OnGoal;
+        BallEventAggregator.Default.Out += OnOut;
     }
 
     private void OnDestroy()
     {
         BallEventAggregator.Default.Goal -= OnGoal;
+        BallEventAggregator.Default.Out -= OnOut;
     }
 
     private void HandleRestartButtonClick(ClickEvent evt)
@@ -29,6 +31,16 @@ public class GameScreen : MonoBehaviour
     }
 
     private void OnGoal()
+    {
+        ShowRestart();
+    }
+
+    private void OnOut()
+    {
+        ShowRestart();
+    }
+
+    private void ShowRestart()
     {
         rootVisualElement.style.display = DisplayStyle.Flex;
     }
