@@ -8,6 +8,7 @@ TagManager:
   - Ball
   - BallKickDetector
   - Out
+  - GoalPost
   layers:
   - Default
   - TransparentFX

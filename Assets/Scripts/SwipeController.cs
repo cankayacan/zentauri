@@ -5,11 +5,12 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+[RequireComponent (typeof (InputController))]
 public class SwipeController : MonoBehaviour
 {
-    [SerializeField] private InputController inputController;
-
     [SerializeField] private GameObject trailPrefab;
+    
+    private InputController inputController;
 
     private GameObject trailGameObject;
 
@@ -21,6 +22,8 @@ public class SwipeController : MonoBehaviour
 
     void Awake()
     {
+        inputController = GetComponent<InputController>();
+
         inputController.StartedTouch += InputControllerOnStartedTouch;
         inputController.StoppedTouch += InputControllerOnStoppedTouch;
     }

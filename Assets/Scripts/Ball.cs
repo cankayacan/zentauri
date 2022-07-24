@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
@@ -17,6 +18,15 @@ public class Ball : MonoBehaviour
         if (other.CompareTag("Out"))
         {
             BallEventAggregator.Default.PublishOut();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        var other = collision.gameObject;
+        if (other.CompareTag("GoalPost"))
+        {
+            BallEventAggregator.Default.PublishGoalPost();
         }
     }
 }

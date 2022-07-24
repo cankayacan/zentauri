@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
 
     private CameraController cameraController;
 
+    private PlayerAudio playerAudio;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -41,17 +43,11 @@ public class Player : MonoBehaviour
         ballDetector.BallTouched += BallDetectorOnBallTouched;
 
         cameraController = GetComponent<CameraController>();
+
+        playerAudio = GetComponent<PlayerAudio>();
         
         BallEventAggregator.Default.Goal += OnGoal;
         BallEventAggregator.Default.Out += OnOut;
-    }
-
-    private void Update()
-    {
-        if (state == PlayerState.Walking)
-        {
-            MovePlayer();
-        }
     }
 
     private void OnDestroy()
@@ -61,6 +57,14 @@ public class Player : MonoBehaviour
         
         BallEventAggregator.Default.Goal -= OnGoal;
         BallEventAggregator.Default.Out -= OnOut;
+    }
+    
+    private void Update()
+    {
+        if (state == PlayerState.Walking)
+        {
+            MovePlayer();
+        }
     }
 
     private void SwipeControllerOnSwiped(Vector3 target)
@@ -104,6 +108,7 @@ public class Player : MonoBehaviour
     {
         if (part.CompareTag("BallKickDetector"))
         {
+            playerAudio.PlayBallKickAudio();
             state = PlayerState.WaitingResult;
             ShootBall(ballGameObject);
         }
