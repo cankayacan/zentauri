@@ -5845,7 +5845,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh48422
+  m_Name: pb_Mesh29172
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6722,7 +6722,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh48280
+  m_Name: pb_Mesh29030
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -7943,7 +7943,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh48652
+  m_Name: pb_Mesh29396
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8808,7 +8808,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9951457, y: 1}
+    m_SensorSize: {x: 2.0475729, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -8824,7 +8824,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 625199409}
-  m_LocalRotation: {x: 0.001562992, y: -0.71936005, z: 0.0016186286, w: 0.6946338}
+  m_LocalRotation: {x: 0.0015629765, y: -0.71936005, z: 0.0016186128, w: 0.6946338}
   m_LocalPosition: {x: 3.1399994, y: -0.40999997, z: -0.020000458}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9277,7 +9277,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh48408
+  m_Name: pb_Mesh29158
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -10339,7 +10339,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh47830
+  m_Name: pb_Mesh28580
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -19574,7 +19574,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh47758
+  m_Name: pb_Mesh28508
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -19922,7 +19922,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9951457, y: 1}
+    m_SensorSize: {x: 2.0475729, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -19938,7 +19938,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346428915}
-  m_LocalRotation: {x: 0.059235927, y: 0.92349505, z: -0.15900336, w: 0.34404355}
+  m_LocalRotation: {x: 0.059235916, y: 0.92349505, z: -0.15900336, w: 0.3440436}
   m_LocalPosition: {x: -2.06, y: 0, z: 2.09}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -20320,7 +20320,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh47788
+  m_Name: pb_Mesh28538
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -21133,7 +21133,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh49370
+  m_Name: pb_Mesh30116
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -26247,7 +26247,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1765518722}
-  m_LocalRotation: {x: 0.001562992, y: -0.71936005, z: 0.0016186286, w: 0.6946338}
+  m_LocalRotation: {x: 0.0015629765, y: -0.71936005, z: 0.0016186128, w: 0.6946338}
   m_LocalPosition: {x: 3.1399994, y: -0.40999997, z: -0.020000458}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -26459,7 +26459,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh48840
+  m_Name: pb_Mesh29584
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -30501,7 +30501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goalAudioClip: {fileID: 8300000, guid: 29d521ac46cab4bffa4cf682d14838d9, type: 3}
-  outAudioClip: {fileID: 8300000, guid: bbd620e6a23d047789d407471009eaf2, type: 3}
+  outAudioClip: {fileID: 8300000, guid: 4e7c4b79dca8d46bf869c96f41339334, type: 3}
 --- !u!82 &2074164427
 AudioSource:
   m_ObjectHideFlags: 0
@@ -30694,7 +30694,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh48694
+  m_Name: pb_Mesh29438
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -31317,9 +31317,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2232456180802182853, guid: eb2169c98a935428f89f53ce6cd21952,
         type: 3}
+      propertyPath: walkingAudioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 5acb7dd0f83ce4b898e538c286cce905, type: 3}
+    - target: {fileID: 2232456180802182853, guid: eb2169c98a935428f89f53ce6cd21952,
+        type: 3}
       propertyPath: ballKickAudioClip
       value: 
       objectReference: {fileID: 8300000, guid: 04d564d0668b94d50907fdadc012768f, type: 3}
+    - target: {fileID: 4787033630775509625, guid: eb2169c98a935428f89f53ce6cd21952,
+        type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4787033630775509625, guid: eb2169c98a935428f89f53ce6cd21952,
+        type: 3}
+      propertyPath: m_Pitch
+      value: 1.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 4787033630775509625, guid: eb2169c98a935428f89f53ce6cd21952,
+        type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4787033630775509625, guid: eb2169c98a935428f89f53ce6cd21952,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5339546214870443812, guid: eb2169c98a935428f89f53ce6cd21952,
         type: 3}
       propertyPath: goalCamera

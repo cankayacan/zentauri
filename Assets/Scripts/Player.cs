@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 enum PlayerState
@@ -23,7 +22,7 @@ public class Player : MonoBehaviour
 
     private Animator animator;
 
-    private PlayerState state = PlayerState.Idle;
+    private PlayerState playerState = PlayerState.Idle;
 
     private BallDetector ballDetector;
 
@@ -45,7 +44,7 @@ public class Player : MonoBehaviour
         cameraController = GetComponent<CameraController>();
 
         playerAudio = GetComponent<PlayerAudio>();
-        
+
         BallEventAggregator.Default.Goal += OnGoal;
         BallEventAggregator.Default.Out += OnOut;
     }
@@ -54,14 +53,14 @@ public class Player : MonoBehaviour
     {
         swipeController.Swiped -= SwipeControllerOnSwiped;
         ballDetector.BallTouched -= BallDetectorOnBallTouched;
-        
+
         BallEventAggregator.Default.Goal -= OnGoal;
         BallEventAggregator.Default.Out -= OnOut;
     }
-    
+
     private void Update()
     {
-        if (state == PlayerState.Walking)
+        if (playerState == PlayerState.Walking)
         {
             MovePlayer();
         }
@@ -69,7 +68,7 @@ public class Player : MonoBehaviour
 
     private void SwipeControllerOnSwiped(Vector3 target)
     {
-        state = PlayerState.Walking;
+        ChangeState(PlayerState.Walking);
         shootTarget = target;
     }
 
@@ -95,44 +94,48 @@ public class Player : MonoBehaviour
         if (!Physics.Raycast(playerPosition, transform.forward, out var hit,
                 Mathf.Infinity,
                 layerMask)) return;
-        
+
         var distance = (hit.point - transform.position).magnitude;
 
         if (!(distance < 0.6f)) return;
-        
-        state = PlayerState.Shooting;
+
+        ChangeState(PlayerState.Shooting);
         animator.SetTrigger("BallKick");
     }
 
     private void BallDetectorOnBallTouched(GameObject part, GameObject ballGameObject)
     {
-        if (part.CompareTag("BallKickDetector"))
-        {
-            playerAudio.PlayBallKickAudio();
-            state = PlayerState.WaitingResult;
-            ShootBall(ballGameObject);
-        }
+        if (!part.CompareTag("BallKickDetector")) return;
+
+        playerAudio.PlayBallKickAudio();
+        ChangeState(PlayerState.WaitingResult);
+        ShootBall(ballGameObject);
     }
 
     private void ShootBall(GameObject ballGameObject)
     {
         var ballPosition = ballGameObject.transform.position;
         var velocity = ProjectileHelper.CalculateVelocity(ballPosition, shootTarget!.Value, ShootToGoalAngle);
-    
+
         var ball = ballGameObject.GetComponent<Ball>();
         ball.Shoot(velocity);
 
         animator.SetInteger("Speed", 0);
     }
-    
+
     private void OnGoal()
     {
         animator.SetTrigger("Goal");
         cameraController.Goal();
     }
-    
+
     private void OnOut()
     {
         animator.SetTrigger("Out");
+    }
+
+    private void ChangeState(PlayerState state)
+    {
+        playerState = state;
     }
 }
