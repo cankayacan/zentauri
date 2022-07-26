@@ -1,14 +1,17 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
+[RequireComponent(typeof (GameController))]
 public class GameScreen : MonoBehaviour
 {
     private VisualElement rootVisualElement;
+    private GameController gameController;
 
     private void Awake()
     {
+        gameController = GetComponent<GameController>();
+
         rootVisualElement = GetComponent<UIDocument>().rootVisualElement;
         rootVisualElement.style.display = DisplayStyle.None;
 
@@ -27,7 +30,7 @@ public class GameScreen : MonoBehaviour
 
     private void HandleRestartButtonClick(ClickEvent evt)
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        gameController.Restart();
     }
 
     private void OnGoal()

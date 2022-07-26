@@ -12,23 +12,14 @@ public class GameAudio: MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        
-        BallEventAggregator.Default.Goal += OnGoal;
-        BallEventAggregator.Default.Out += OnOut;
     }
 
-    private void OnDestroy()
-    {
-        BallEventAggregator.Default.Goal -= OnGoal;
-        BallEventAggregator.Default.Out -= OnOut;
-    }
-
-    private void OnGoal()
+    public void PlayGoalAudioClip()
     {
         audioSource.PlayOneShot(goalAudioClip);
     }
 
-    private void OnOut()
+    public void PlayOutAudioClip()
     {
         audioSource.PlayOneShot(outAudioClip);
     }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-enum PlayerState
+internal enum PlayerState
 {
     Idle,
     Walking,
@@ -8,27 +8,22 @@ enum PlayerState
     WaitingResult
 }
 
+[RequireComponent(typeof (CharacterController), typeof (CameraController), typeof (SwipeController))]
+[RequireComponent(typeof (PlayerAudio), typeof (Animator))]
 public class Player : MonoBehaviour
 {
-    private const int ShootToGoalAngle = 15;
-
+    [SerializeField] private int shootToGoalAngle = 15;
     [SerializeField] private int movementSpeed = 10;
 
-    private CharacterController characterController;
-
-    private SwipeController swipeController;
-
     private Vector3? shootTarget;
-
-    private Animator animator;
-
     private PlayerState playerState = PlayerState.Idle;
 
-    private BallDetector ballDetector;
-
+    private CharacterController characterController;
     private CameraController cameraController;
-
+    private SwipeController swipeController;
+    private BallDetector ballDetector;
     private PlayerAudio playerAudio;
+    private Animator animator;
 
     private void Awake()
     {
@@ -115,7 +110,7 @@ public class Player : MonoBehaviour
     private void ShootBall(GameObject ballGameObject)
     {
         var ballPosition = ballGameObject.transform.position;
-        var velocity = ProjectileHelper.CalculateVelocity(ballPosition, shootTarget!.Value, ShootToGoalAngle);
+        var velocity = ProjectileHelper.CalculateVelocity(ballPosition, shootTarget!.Value, shootToGoalAngle);
 
         var ball = ballGameObject.GetComponent<Ball>();
         ball.Shoot(velocity);

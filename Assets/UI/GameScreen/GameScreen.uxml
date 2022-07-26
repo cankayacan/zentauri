@@ -2,6 +2,6 @@
     <Style src="project://database/Assets/UI/GameScreen/GameScreen.uss?fileID=7433441132597879392&amp;guid=3fdb057724ec42f8aab39c7565fd1ec7&amp;type=3#GameScreen" />
     <Style src="project://database/Assets/UI/Common.uss?fileID=7433441132597879392&amp;guid=93272eb45cf54169879c98003bdaf05a&amp;type=3#Common" />
     <ui:VisualElement class="footer">
-        <ui:Button text="Restart" name="restart-button" enable-rich-text="false" class="btn btn-restart" />
+        <ui:Button text="Restart" name="restart-button" class="btn btn-restart" />
     </ui:VisualElement>
 </ui:UXML>
