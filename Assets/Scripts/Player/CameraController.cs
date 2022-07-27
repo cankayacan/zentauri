@@ -5,7 +5,7 @@ public class CameraController: MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera shootingCamera;
     [SerializeField] private CinemachineVirtualCamera goalCamera;
-    
+
     private void Update()
     {
         if (goalCamera.Priority == 1)
@@ -13,7 +13,7 @@ public class CameraController: MonoBehaviour
             MoveGoalCamera();
         }
     }
-    
+
     public void Goal()
     {
         goalCamera.Priority = 1;

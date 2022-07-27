@@ -4,8 +4,6 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof (GameAudio))]
 public class GameController: MonoBehaviour
 {
-    private bool isPlaying = true;
-
     private GameAudio gameAudio;
 
     private void Awake()
@@ -24,18 +22,17 @@ public class GameController: MonoBehaviour
 
     public void Restart()
     {
+        BallEventAggregator.Default.ResetGame();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void OnGoal()
     {
-        if (isPlaying) gameAudio.PlayGoalAudioClip();
-        isPlaying = false;
+        gameAudio.PlayGoalAudioClip();
     }
 
     private void OnOut()
     {
-        if (isPlaying) gameAudio.PlayOutAudioClip();
-        isPlaying = false;
+        gameAudio.PlayOutAudioClip();
     }
 }

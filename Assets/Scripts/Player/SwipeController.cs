@@ -9,7 +9,7 @@ using UnityEngine;
 public class SwipeController : MonoBehaviour
 {
     [SerializeField] private GameObject trailPrefab;
-    
+
     private InputController inputController;
 
     private GameObject trailGameObject;
@@ -52,7 +52,7 @@ public class SwipeController : MonoBehaviour
         path.Add(position);
         Destroy(trailGameObject);
         trailGameObject = null;
-        Shoot();
+        FireSwiped();
     }
 
     private IEnumerator Trail()
@@ -71,7 +71,7 @@ public class SwipeController : MonoBehaviour
         }
     }
 
-    private void Shoot()
+    private void FireSwiped()
     {
         Debug.Log($"Path count {path.Count}");
         if (path.Count < 3) return;
@@ -89,7 +89,7 @@ public class SwipeController : MonoBehaviour
 
         var furthestPoint = checkPoints
             .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
-        
+
         var curveDirection = (furthestPoint - startPosition).normalized;
         Debug.Log($"Curve direction {curveDirection}");
 

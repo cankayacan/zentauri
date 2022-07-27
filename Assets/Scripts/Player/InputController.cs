@@ -7,7 +7,7 @@ public class InputController : MonoBehaviour
     private PlayerInput playerInput;
 
     public event Action<Vector2> StartedTouch;
-    
+
     public event Action<Vector2> StoppedTouch;
 
     public Vector2 PrimaryPosition => playerInput.actions["PrimaryPosition"].ReadValue<Vector2>();
@@ -31,7 +31,7 @@ public class InputController : MonoBehaviour
         Debug.Log("Started touch primary");
         StartedTouch?.Invoke(PrimaryPosition);
     }
-    
+
     private void StopTouchPrimary(InputAction.CallbackContext ctx)
     {
         Debug.Log($"Stopped touch primary {playerInput.actions["PrimaryPosition"].ReadValue<Vector2>()}");
