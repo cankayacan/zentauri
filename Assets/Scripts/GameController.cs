@@ -1,38 +1,48 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof (GameAudio))]
-public class GameController: MonoBehaviour
+public class GameController : Singleton<GameController>
 {
+    private bool gameFinished;
+
     private GameAudio gameAudio;
 
-    private void Awake()
+    public event Action Goal;
+
+    public event Action Out;
+
+    public override void Awake()
     {
+        base.Awake();
         gameAudio = GetComponent<GameAudio>();
-
-        BallEventAggregator.Default.Goal += OnGoal;
-        BallEventAggregator.Default.Out += OnOut;
     }
 
-    private void OnDestroy()
+    public void RestartGame()
     {
-        BallEventAggregator.Default.Goal -= OnGoal;
-        BallEventAggregator.Default.Out -= OnOut;
-    }
-
-    public void Restart()
-    {
-        BallEventAggregator.Default.ResetGame();
+        gameFinished = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    private void OnGoal()
+    public void PublishGoal()
     {
-        gameAudio.PlayGoalAudioClip();
+        if (!gameFinished)
+        {
+            Goal?.Invoke();
+            gameAudio.PlayGoalAudioClip();
+        }
+
+        gameFinished = true;
     }
 
-    private void OnOut()
+    public void PublishOut()
     {
-        gameAudio.PlayOutAudioClip();
+        if (!gameFinished)
+        {
+            Out?.Invoke();
+            gameAudio.PlayOutAudioClip();
+        }
+        gameFinished = true;
     }
 }

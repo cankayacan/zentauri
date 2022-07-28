@@ -97,6 +97,8 @@ public class SwipeController : MonoBehaviour
 
         if (!target.HasValue) return;
 
+        Debug.Log($"Target {target}");
+
         Swiped?.Invoke(target.Value);
     }
 }

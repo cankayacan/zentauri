@@ -419,8 +419,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129b44b694e44c64a034566ab5b7577b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkingAudioClip: {fileID: 0}
-  ballKickAudioClip: {fileID: 0}
+  walkingAudioClip: {fileID: 8300000, guid: 5acb7dd0f83ce4b898e538c286cce905, type: 3}
+  ballKickAudioClip: {fileID: 8300000, guid: 04d564d0668b94d50907fdadc012768f, type: 3}
+--- !u!114 &5337322274823046304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211919018296722483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 897b5f68602a4c72abe2127484af086a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerState: 0
 --- !u!114 &5339546214870443812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,25 +460,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce197c23d5d6461298145bce2d0b1810, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 4
+  MoveSpeed: 3
   SprintSpeed: 10
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
   Grounded: 1
   GroundedOffset: 0.01
---- !u!114 &5337322274823046304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1211919018296722483}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 897b5f68602a4c72abe2127484af086a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerState: 0
 --- !u!4 &3950185744375399525 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -6142609460509655801, guid: a5327175fdf55418f9907fd5e46b2c86,

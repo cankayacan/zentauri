@@ -31,8 +31,8 @@ public class Player : MonoBehaviour
 
         playerAudio = GetComponent<PlayerAudio>();
 
-        BallEventAggregator.Default.Goal += OnGoal;
-        BallEventAggregator.Default.Out += OnOut;
+        GameController.Default.Goal += OnGoal;
+        GameController.Default.Out += OnOut;
     }
 
     private void OnDestroy()
@@ -40,8 +40,8 @@ public class Player : MonoBehaviour
         swipeController.Swiped -= SwipeControllerOnSwiped;
         ballDetector.BallTouched -= BallDetectorOnBallTouched;
 
-        BallEventAggregator.Default.Goal -= OnGoal;
-        BallEventAggregator.Default.Out -= OnOut;
+        GameController.Default.Goal -= OnGoal;
+        GameController.Default.Out -= OnOut;
     }
 
     private void SwipeControllerOnSwiped(Vector3 target)

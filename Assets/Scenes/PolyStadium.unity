@@ -12684,6 +12684,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2168298366176749921, guid: c2ab9bfd17300452998f49e23aab5537,
+        type: 3}
+      propertyPath: goalPostAudioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: bbd620e6a23d047789d407471009eaf2, type: 3}
     - target: {fileID: 7301901185790875830, guid: c2ab9bfd17300452998f49e23aab5537,
         type: 3}
       propertyPath: m_CollisionDetection
@@ -25667,7 +25672,6 @@ GameObject:
   - component: {fileID: 1740877289}
   - component: {fileID: 1740877292}
   - component: {fileID: 1740877291}
-  - component: {fileID: 1740877290}
   m_Layer: 5
   m_Name: GameScreen
   m_TagString: Untagged
@@ -25717,18 +25721,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e3a42a194a1f47f68f893bf7f3eb164, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1740877290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1740877286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76990846b4c24f019a13bf0b5af8c4a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1740877291
@@ -30748,7 +30740,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2074164425}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76990846b4c24f019a13bf0b5af8c4a5, type: 3}
+  m_Script: {fileID: 11500000, guid: 4208ef338ab3e43678514437c71a8fec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &2077905738 stripped
@@ -31058,24 +31050,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2022380377457236038}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2101945560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2101945550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce197c23d5d6461298145bce2d0b1810, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveSpeed: 3
-  SprintSpeed: 10
-  RotationSmoothTime: 0.12
-  SpeedChangeRate: 10
-  Grounded: 1
-  GroundedOffset: 0.01
 --- !u!114 &2101945561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31543,8 +31517,7 @@ PrefabInstance:
       propertyPath: shootingCamera
       value: 
       objectReference: {fileID: 625199410}
-    m_RemovedComponents:
-    - {fileID: 2444654177999988290, guid: eb2169c98a935428f89f53ce6cd21952, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb2169c98a935428f89f53ce6cd21952, type: 3}
 --- !u!1001 &7641454805625560043
 PrefabInstance:

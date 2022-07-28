@@ -14,7 +14,6 @@ public class InputController : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("Input controller");
         playerInput = GetComponent<PlayerInput>();
         playerInput.actions["PrimaryContact"].started += StartTouchPrimary;
         playerInput.actions["PrimaryContact"].canceled += StopTouchPrimary;

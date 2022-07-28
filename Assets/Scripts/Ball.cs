@@ -1,23 +1,31 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof (BallAudio))]
 public class Ball : MonoBehaviour
 {
+    private BallAudio ballAudio;
+
+    public void Awake()
+    {
+        ballAudio = GetComponent<BallAudio>();
+    }
+
     public void Shoot(Vector3 velocity)
     {
         GetComponent<Rigidbody>().velocity = velocity;
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("GoalDetector"))
         {
-            BallEventAggregator.Default.PublishGoal();
+            GameController.Default.PublishGoal();
         }
 
         if (other.CompareTag("Out"))
         {
-            BallEventAggregator.Default.PublishOut();
+            GameController.Default.PublishOut();
         }
     }
 
@@ -26,7 +34,7 @@ public class Ball : MonoBehaviour
         var other = collision.gameObject;
         if (other.CompareTag("GoalPost"))
         {
-            BallEventAggregator.Default.PublishGoalPost();
+            ballAudio.PlayGoalPostAudioClip();
         }
     }
 }
