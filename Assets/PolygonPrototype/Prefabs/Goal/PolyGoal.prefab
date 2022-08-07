@@ -225,6 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b0915711624211b7d19af287b6985c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goalPostAudioClip: {fileID: 0}
 --- !u!1001 &8010674039790728243
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -500,6 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b0915711624211b7d19af287b6985c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goalPostAudioClip: {fileID: 0}
 --- !u!1001 &8010674040169802030
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -699,3 +701,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0b0915711624211b7d19af287b6985c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goalPostAudioClip: {fileID: 0}

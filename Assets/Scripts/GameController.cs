@@ -1,48 +1,37 @@
 using System;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof (GameAudio))]
 public class GameController : Singleton<GameController>
 {
-    private bool gameFinished;
-
-    private GameAudio gameAudio;
+    public bool finished;
 
     public event Action Goal;
 
     public event Action Out;
 
-    public override void Awake()
-    {
-        base.Awake();
-        gameAudio = GetComponent<GameAudio>();
-    }
-
     public void RestartGame()
     {
-        gameFinished = false;
+        finished = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void PublishGoal()
     {
-        if (!gameFinished)
+        if (!finished)
         {
             Goal?.Invoke();
-            gameAudio.PlayGoalAudioClip();
         }
 
-        gameFinished = true;
+        finished = true;
     }
 
     public void PublishOut()
     {
-        if (!gameFinished)
+        if (!finished)
         {
             Out?.Invoke();
-            gameAudio.PlayOutAudioClip();
         }
-        gameFinished = true;
+
+        finished = true;
     }
 }

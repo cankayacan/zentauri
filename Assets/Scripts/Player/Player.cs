@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 
     private Vector3? shootTarget;
 
+    private PlayerCharacterController playerCharacterController;
     private PlayerStateController playerStateController;
     private CameraController cameraController;
     private SwipeController swipeController;
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        playerCharacterController = GetComponent<PlayerCharacterController>();
         playerStateController = GetComponent<PlayerStateController>();
         animator = GetComponent<Animator>();
 
@@ -46,7 +48,7 @@ public class Player : MonoBehaviour
 
     private void SwipeControllerOnSwiped(Vector3 target)
     {
-        playerStateController.ChangeState(PlayerState.FreeToWalk);
+        playerCharacterController.TriggerWalkToBall();
         shootTarget = target;
     }
 
@@ -67,7 +69,16 @@ public class Player : MonoBehaviour
         var ball = ballGameObject.GetComponent<Ball>();
         ball.Shoot(velocity);
 
+        Invoke("AfterShootBall", 3f);
+
         animator.SetInteger("Speed", 0);
+    }
+
+    private void AfterShootBall()
+    {
+        if (GameController.Default.finished) return;
+
+        playerCharacterController.TriggerWalkToBall();
     }
 
     private void OnGoal()

@@ -3,7 +3,8 @@ using UnityEngine;
 public enum PlayerState
 {
     Idle,
-    FreeToWalk,
+    WalkToBall,
+    Dribbling,
     Shooting,
     WaitingResult
 }
@@ -14,6 +15,7 @@ public class PlayerStateController: MonoBehaviour
 
     public void ChangeState(PlayerState state)
     {
+        Debug.Log($"Changing state {state}");
         playerState = state;
     }
 }

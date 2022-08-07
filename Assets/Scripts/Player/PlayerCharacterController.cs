@@ -3,33 +3,44 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCharacterController : MonoBehaviour
 {
-    private bool sprint = false;
+    private float rotationVelocity;
+    private float targetRotationAngle;
+    private Vector3? positionToWalk;
 
     private Ball ball;
     private Animator animator;
     private CharacterController characterController;
     private PlayerStateController playerStateController;
 
+    public Vector3 speed => characterController.velocity;
+
     [Header("Player")] [Tooltip("Move speed of the character in m/s")]
-    public float MoveSpeed = 4;
+    public float moveSpeed = 4;
 
     [Tooltip("Sprint speed of the character in m/s")]
-    public float SprintSpeed = 10;
+    public float sprintSpeed = 10;
 
     [Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 0.3f)]
-    public float RotationSmoothTime = 0.12f;
+    public float rotationSmoothTime = 0.12f;
 
     [Tooltip("Acceleration and deceleration")]
-    public float SpeedChangeRate = 10.0f;
+    public float speedChangeRate = 10.0f;
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-    public bool Grounded = true;
+    public bool grounded = true;
 
     [Tooltip("Useful for rough ground")]
-    public float GroundedOffset = 0.01f;
+    public float groundedOffset = 0.01f;
 
-    private void Awake()
+    [Header("Transform")]
+    [Tooltip("Right foot transform")]
+    public Transform footTransform;
+
+    [Tooltip("Goal transform")]
+    public Transform goalTransform;
+
+    public void Awake()
     {
         ball = FindObjectOfType<Ball>();
         animator = GetComponent<Animator>();
@@ -37,32 +48,108 @@ public class PlayerCharacterController : MonoBehaviour
         playerStateController = GetComponent<PlayerStateController>();
     }
 
-    private void Update()
+    // public void Start()
+    // {
+    //     // TESTING TESTING
+    //     ball.Shoot(new Vector3(1, 0, 1) * 10);
+    //     TriggerWalkToBall();
+    // }
+
+    public void Update()
     {
         GroundedCheck();
-        MovePlayer();
+        Rotate();
+        HandlePlayerState();
     }
 
-    private void MovePlayer()
+    public void TriggerWalkToBall()
     {
-        if (!Grounded)
+        positionToWalk = GetPositionToWalk();
+        Debug.Log($"WalkToBall triggered {positionToWalk}");
+
+        playerStateController.ChangeState(PlayerState.WalkToBall);
+    }
+
+    private void TriggerDribbling()
+    {
+        ball.Control(this);
+        playerStateController.ChangeState(PlayerState.Dribbling);
+    }
+
+    private void TriggerShooting()
+    {
+        ball.Uncontrol();
+        playerStateController.ChangeState(PlayerState.Shooting);
+        animator.SetTrigger("BallKick");
+    }
+
+    private void HandlePlayerState()
+    {
+        var playerState = playerStateController.playerState;
+
+        if (playerState == PlayerState.WalkToBall) WalkToBall();
+        if (playerState == PlayerState.Dribbling) Dribble();
+    }
+
+    private void WalkToBall()
+    {
+        Move(sprintSpeed);
+        CheckBallInRange();
+    }
+
+    private void Dribble()
+    {
+        Move(moveSpeed);
+    }
+
+    private void Move(float targetSpeed)
+    {
+        characterController.Move(transform.forward * (targetSpeed * Time.deltaTime));
+        animator.SetInteger("Speed", (int)targetSpeed);
+    }
+
+    private void Rotate()
+    {
+        var targetPosition = ball.transform.position;
+
+        if (playerStateController.playerState == PlayerState.Dribbling)
         {
-            characterController.Move(Physics.gravity * Time.deltaTime);
+            targetPosition = goalTransform.position;
         }
 
-        if (playerStateController.playerState != PlayerState.FreeToWalk) return;
+        if (playerStateController.playerState == PlayerState.WalkToBall && positionToWalk != null)
+        {
+            targetPosition = positionToWalk.Value;
+        }
 
-        var targetSpeed = sprint ? SprintSpeed : MoveSpeed;
+        var direction = targetPosition - transform.position;
+        var targetRotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
-        animator.SetInteger("Speed", (int)targetSpeed);
+        var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
+            rotationSmoothTime);
 
-        var move = transform.forward * (Time.deltaTime * targetSpeed);
-        characterController.Move(move);
-
-        CheckBallInShootingRange();
+        transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
     }
 
-    private void CheckBallInShootingRange()
+    private Vector3? GetPositionToWalk()
+    {
+        var predictedBallPositions = ball.GetPredictedPositions(3f);
+
+        foreach (var entry in predictedBallPositions)
+        {
+            var distanceToPredictedPosition = entry.Value - transform.position;
+            var requiredSpeedToPredictedPosition = distanceToPredictedPosition.magnitude / entry.Key;
+
+            if (requiredSpeedToPredictedPosition < sprintSpeed)
+            {
+                return entry.Value;
+            }
+        }
+
+        return null;
+    }
+
+    private void CheckBallInRange()
     {
         var layerMask = LayerMask.GetMask("Ball");
 
@@ -71,20 +158,29 @@ public class PlayerCharacterController : MonoBehaviour
 
         Debug.DrawRay(playerPosition, transform.forward, Color.red);
 
-        if (!Physics.Raycast(playerPosition, transform.forward, out var hit,
-                Mathf.Infinity,
-                layerMask)) return;
+        if (!Physics.Raycast(playerPosition, transform.forward, out _, .5f, layerMask)) return;
 
-        var distance = (hit.point - transform.position).magnitude;
+        var distanceToGoal = (transform.position - goalTransform.position).magnitude;
 
-        if (!(distance < 0.6f)) return;
+        Debug.Log($"Distance to goal {distanceToGoal}");
 
-        playerStateController.ChangeState(PlayerState.Shooting);
-        animator.SetTrigger("BallKick");
+        if (distanceToGoal > 20)
+        {
+            TriggerDribbling();
+            return;
+        }
+
+        TriggerShooting();
     }
 
     private void GroundedCheck()
     {
-        Grounded = transform.position.y <= GroundedOffset;
+        grounded = transform.position.y <= groundedOffset;
+
+        if (!grounded)
+        {
+            Debug.Log("NOT GROUNDED!!!");
+            characterController.Move(Physics.gravity * Time.deltaTime);
+        }
     }
 }
