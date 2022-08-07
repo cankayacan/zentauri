@@ -15,7 +15,7 @@ public class PlayerStateController: MonoBehaviour
 
     public void ChangeState(PlayerState state)
     {
-        Debug.Log($"Changing state {state}");
+        Debug.Log($"Chaging state to {state}");
         playerState = state;
     }
 }

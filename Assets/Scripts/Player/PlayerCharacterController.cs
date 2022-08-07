@@ -65,19 +65,21 @@ public class PlayerCharacterController : MonoBehaviour
     public void TriggerWalkToBall()
     {
         positionToWalk = GetPositionToWalk();
-        Debug.Log($"WalkToBall triggered {positionToWalk}");
+        Debug.Log($"Triggering walk to ball {positionToWalk}");
 
         playerStateController.ChangeState(PlayerState.WalkToBall);
     }
 
     private void TriggerDribbling()
     {
+        Debug.Log("Triggering dribbling");
         ball.Control(this);
         playerStateController.ChangeState(PlayerState.Dribbling);
     }
 
     private void TriggerShooting()
     {
+        Debug.Log("Triggering shooting");
         ball.Uncontrol();
         playerStateController.ChangeState(PlayerState.Shooting);
         animator.SetTrigger("BallKick");
@@ -87,8 +89,16 @@ public class PlayerCharacterController : MonoBehaviour
     {
         var playerState = playerStateController.playerState;
 
-        if (playerState == PlayerState.WalkToBall) WalkToBall();
-        if (playerState == PlayerState.Dribbling) Dribble();
+        if (playerState == PlayerState.WalkToBall)
+        {
+            WalkToBall();
+        }
+
+        if (playerState == PlayerState.Dribbling)
+        {
+            Dribble();
+            ShootWhenPlayerInShootingArea();
+        }
     }
 
     private void WalkToBall()
@@ -160,17 +170,23 @@ public class PlayerCharacterController : MonoBehaviour
 
         if (!Physics.Raycast(playerPosition, transform.forward, out _, .5f, layerMask)) return;
 
-        var distanceToGoal = (transform.position - goalTransform.position).magnitude;
+        ShootWhenPlayerInShootingArea();
 
-        Debug.Log($"Distance to goal {distanceToGoal}");
-
-        if (distanceToGoal > 20)
+        if (playerStateController.playerState != PlayerState.Shooting)
         {
             TriggerDribbling();
-            return;
         }
+    }
 
-        TriggerShooting();
+    private void ShootWhenPlayerInShootingArea()
+    {
+        var distanceToGoal = (transform.position - goalTransform.position).magnitude;
+        Debug.Log($"Distance to goal {distanceToGoal}");
+
+        if (distanceToGoal <= 20)
+        {
+            TriggerShooting();
+        }
     }
 
     private void GroundedCheck()
@@ -179,7 +195,7 @@ public class PlayerCharacterController : MonoBehaviour
 
         if (!grounded)
         {
-            Debug.Log("NOT GROUNDED!!!");
+            // Debug.Log("NOT GROUNDED!!!");
             characterController.Move(Physics.gravity * Time.deltaTime);
         }
     }

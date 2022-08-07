@@ -56,6 +56,8 @@ public class Player : MonoBehaviour
     {
         if (!part.CompareTag("BallKickDetector")) return;
 
+        if (playerStateController.playerState != PlayerState.Shooting) return;
+
         playerAudio.PlayBallKickAudio();
         playerStateController.ChangeState(PlayerState.WaitingResult);
         ShootBall(ballGameObject);
