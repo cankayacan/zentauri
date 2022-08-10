@@ -6,7 +6,7 @@ public class Ball : MonoBehaviour
 {
     private BallAudio ballAudio;
     private Rigidbody ballRigidbody;
-    private PlayerCharacterController owner;
+    public PlayerCharacterController owner;
 
     private Vector3 cachedPosition;
     private Vector3 cachedVelocity;
@@ -45,14 +45,16 @@ public class Ball : MonoBehaviour
 
     public void Uncontrol()
     {
+        if (owner)
+        {
+            SetPosition(owner.ballOwnDistance);
+            owner = null;
+        }
         SetVelocityToZero();
-        owner = null;
     }
 
     public Dictionary<float, Vector3> GetPredictedPositions(float forSeconds)
     {
-        StartSimulation();
-
         var simulatedTime = 0f;
         var predictions = new Dictionary<float, Vector3>();
 
@@ -63,17 +65,20 @@ public class Ball : MonoBehaviour
             predictions.Add(simulatedTime, ballRigidbody.position);
         }
 
-        StopSimulation();
-
         return predictions;
     }
 
     private void Dribble()
     {
+        SetPosition(owner.ballDribblingDistance);
+    }
+
+    private void SetPosition(float forwardMultiplier)
+    {
         var ownerForward = owner.transform.forward;
         var footPosition = owner.footTransform.position;
 
-        var ballPosition = footPosition + (ownerForward * 1f);
+        var ballPosition = footPosition + (ownerForward * forwardMultiplier);
         ballPosition = new Vector3(ballPosition.x, 0.267f, ballPosition.z);
         transform.position = ballPosition;
     }
@@ -120,21 +125,5 @@ public class Ball : MonoBehaviour
 
         ballAudio.PlayOutAudioClip();
         GameController.Default.PublishOut();
-    }
-
-    private void StartSimulation()
-    {
-        cachedPosition = ballRigidbody.position;
-        cachedVelocity = ballRigidbody.velocity;
-        cachedAngularVelocity = ballRigidbody.angularVelocity;
-        Physics.autoSimulation = false;
-    }
-
-    private void StopSimulation()
-    {
-        ballRigidbody.position = cachedPosition;
-        ballRigidbody.velocity = cachedVelocity;
-        ballRigidbody.angularVelocity = cachedAngularVelocity;
-        Physics.autoSimulation = true;
     }
 }

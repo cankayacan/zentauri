@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 873892303}
   - component: {fileID: 873892302}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: BallDetector
   m_TagString: BallKickDetector
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 873892300}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0325, z: 0.071}
+  m_LocalPosition: {x: 0, y: -0.028, z: 0.153}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -441,6 +441,10 @@ MonoBehaviour:
   groundedOffset: 0.01
   footTransform: {fileID: 0}
   goalTransform: {fileID: 0}
+  maxDurationForBallPredictionInMs: 1
+  ballOwnDistance: 0.5
+  ballDribblingDistance: 1
+  shootingDistance: 20
 --- !u!114 &5337322274823046304
 MonoBehaviour:
   m_ObjectHideFlags: 0

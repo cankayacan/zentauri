@@ -5,7 +5,6 @@ public class PlayerCharacterController : MonoBehaviour
 {
     private float rotationVelocity;
     private float targetRotationAngle;
-    private Vector3? positionToWalk;
 
     private Ball ball;
     private Animator animator;
@@ -20,8 +19,8 @@ public class PlayerCharacterController : MonoBehaviour
     [Tooltip("Sprint speed of the character in m/s")]
     public float sprintSpeed = 10;
 
-    [Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 0.3f)]
-    public float rotationSmoothTime = 0.12f;
+    [Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 1000f)]
+    public float rotationSpeed = 200;
 
     [Tooltip("Acceleration and deceleration")]
     public float speedChangeRate = 10.0f;
@@ -40,6 +39,16 @@ public class PlayerCharacterController : MonoBehaviour
     [Tooltip("Goal transform")]
     public Transform goalTransform;
 
+    [Header("Ball")]
+    [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
+    public float ballOwnDistance = .5f;
+
+    [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
+    public float ballDribblingDistance = 1f;
+
+    [Tooltip("When the character has this distance to the goal, shoot the ball.")]
+    public float shootingDistance = 20f;
+
     public void Awake()
     {
         ball = FindObjectOfType<Ball>();
@@ -48,25 +57,15 @@ public class PlayerCharacterController : MonoBehaviour
         playerStateController = GetComponent<PlayerStateController>();
     }
 
-    // public void Start()
-    // {
-    //     // TESTING TESTING
-    //     ball.Shoot(new Vector3(1, 0, 1) * 10);
-    //     TriggerWalkToBall();
-    // }
-
     public void Update()
     {
         GroundedCheck();
-        Rotate();
         HandlePlayerState();
     }
 
     public void TriggerWalkToBall()
     {
-        positionToWalk = GetPositionToWalk();
-        Debug.Log($"Triggering walk to ball {positionToWalk}");
-
+        Debug.Log($"Triggering walk to ball");
         playerStateController.ChangeState(PlayerState.WalkToBall);
     }
 
@@ -97,19 +96,21 @@ public class PlayerCharacterController : MonoBehaviour
         if (playerState == PlayerState.Dribbling)
         {
             Dribble();
-            ShootWhenPlayerInShootingArea();
         }
     }
 
     private void WalkToBall()
     {
+        RotateToPosition(ball.transform.position);
         Move(sprintSpeed);
         CheckBallInRange();
     }
 
     private void Dribble()
     {
+        RotateToPosition(goalTransform.position);
         Move(moveSpeed);
+        ShootWhenPlayerInShootingArea();
     }
 
     private void Move(float targetSpeed)
@@ -118,45 +119,13 @@ public class PlayerCharacterController : MonoBehaviour
         animator.SetInteger("Speed", (int)targetSpeed);
     }
 
-    private void Rotate()
+    private void RotateToPosition(Vector3 targetPosition)
     {
-        var targetPosition = ball.transform.position;
-
-        if (playerStateController.playerState == PlayerState.Dribbling)
-        {
-            targetPosition = goalTransform.position;
-        }
-
-        if (playerStateController.playerState == PlayerState.WalkToBall && positionToWalk != null)
-        {
-            targetPosition = positionToWalk.Value;
-        }
-
         var direction = targetPosition - transform.position;
         var targetRotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
-        var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
-            rotationSmoothTime);
-
-        transform.rotation = Quaternion.Euler(0.0f, angle, 0.0f);
-    }
-
-    private Vector3? GetPositionToWalk()
-    {
-        var predictedBallPositions = ball.GetPredictedPositions(3f);
-
-        foreach (var entry in predictedBallPositions)
-        {
-            var distanceToPredictedPosition = entry.Value - transform.position;
-            var requiredSpeedToPredictedPosition = distanceToPredictedPosition.magnitude / entry.Key;
-
-            if (requiredSpeedToPredictedPosition < sprintSpeed)
-            {
-                return entry.Value;
-            }
-        }
-
-        return null;
+        Quaternion targetRotationQuaternion = Quaternion.Euler(new Vector3(0, targetRotation, 0));
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotationQuaternion, rotationSpeed * Time.deltaTime);
     }
 
     private void CheckBallInRange()
@@ -168,35 +137,30 @@ public class PlayerCharacterController : MonoBehaviour
 
         Debug.DrawRay(playerPosition, transform.forward, Color.red);
 
-        if (!Physics.Raycast(playerPosition, transform.forward, out _, .5f, layerMask)) return;
+        if (!Physics.Raycast(playerPosition, transform.forward, out _, ballOwnDistance, layerMask)) return;
 
         ShootWhenPlayerInShootingArea();
 
-        if (playerStateController.playerState != PlayerState.Shooting)
-        {
-            TriggerDribbling();
-        }
+        if (playerStateController.playerState == PlayerState.Shooting) return;
+
+        TriggerDribbling();
     }
 
     private void ShootWhenPlayerInShootingArea()
     {
         var distanceToGoal = (transform.position - goalTransform.position).magnitude;
-        Debug.Log($"Distance to goal {distanceToGoal}");
 
-        if (distanceToGoal <= 20)
-        {
-            TriggerShooting();
-        }
+        if (distanceToGoal > shootingDistance) return;
+
+        TriggerShooting();
     }
 
     private void GroundedCheck()
     {
-        grounded = transform.position.y <= groundedOffset;
+        grounded = transform.position.y <= characterController.skinWidth + groundedOffset;
 
-        if (!grounded)
-        {
-            // Debug.Log("NOT GROUNDED!!!");
-            characterController.Move(Physics.gravity * Time.deltaTime);
-        }
+        if (grounded) return;
+
+        characterController.Move(Physics.gravity * Time.fixedDeltaTime);
     }
 }
