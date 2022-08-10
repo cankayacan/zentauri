@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof (BallAudio))]
@@ -6,11 +5,8 @@ public class Ball : MonoBehaviour
 {
     private BallAudio ballAudio;
     private Rigidbody ballRigidbody;
+    private float ballGroundedHeight;
     public PlayerCharacterController owner;
-
-    private Vector3 cachedPosition;
-    private Vector3 cachedVelocity;
-    private Vector3 cachedAngularVelocity;
 
     public Vector3 speed => ballRigidbody.velocity;
 
@@ -18,6 +14,7 @@ public class Ball : MonoBehaviour
     {
         ballAudio = GetComponent<BallAudio>();
         ballRigidbody = GetComponent<Rigidbody>();
+        ballGroundedHeight = transform.position.y;
     }
 
     public void Update()
@@ -53,21 +50,6 @@ public class Ball : MonoBehaviour
         SetVelocityToZero();
     }
 
-    public Dictionary<float, Vector3> GetPredictedPositions(float forSeconds)
-    {
-        var simulatedTime = 0f;
-        var predictions = new Dictionary<float, Vector3>();
-
-        while (forSeconds >= simulatedTime)
-        {
-            simulatedTime += Time.fixedDeltaTime;
-            Physics.Simulate(Time.fixedDeltaTime);
-            predictions.Add(simulatedTime, ballRigidbody.position);
-        }
-
-        return predictions;
-    }
-
     private void Dribble()
     {
         SetPosition(owner.ballDribblingDistance);
@@ -79,7 +61,7 @@ public class Ball : MonoBehaviour
         var footPosition = owner.footTransform.position;
 
         var ballPosition = footPosition + (ownerForward * forwardMultiplier);
-        ballPosition = new Vector3(ballPosition.x, 0.267f, ballPosition.z);
+        ballPosition = new Vector3(ballPosition.x, ballGroundedHeight, ballPosition.z);
         transform.position = ballPosition;
     }
 

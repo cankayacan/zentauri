@@ -43,6 +43,9 @@ public class PlayerCharacterController : MonoBehaviour
     [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
     public float ballOwnDistance = .5f;
 
+    [Tooltip("Detect ball with a ray cast beamed from this height.")]
+    public float ballRangeDetectInHeight = .3f;
+
     [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
     public float ballDribblingDistance = 1f;
 
@@ -133,7 +136,7 @@ public class PlayerCharacterController : MonoBehaviour
         var layerMask = LayerMask.GetMask("Ball");
 
         var position = transform.position;
-        var playerPosition = new Vector3(position.x, 0.3f, position.z);
+        var playerPosition = new Vector3(position.x, ballRangeDetectInHeight, position.z);
 
         Debug.DrawRay(playerPosition, transform.forward, Color.red);
 
