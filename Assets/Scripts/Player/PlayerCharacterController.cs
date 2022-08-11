@@ -68,21 +68,18 @@ public class PlayerCharacterController : MonoBehaviour
 
     public void TriggerWalkToBall()
     {
-        Debug.Log($"Triggering walk to ball");
         playerStateController.ChangeState(PlayerState.WalkToBall);
     }
 
     private void TriggerDribbling()
     {
-        Debug.Log("Triggering dribbling");
         ball.Control(this);
         playerStateController.ChangeState(PlayerState.Dribbling);
     }
 
     private void TriggerShooting()
     {
-        Debug.Log("Triggering shooting");
-        ball.Uncontrol();
+        ball.PrepareShooting();
         playerStateController.ChangeState(PlayerState.Shooting);
         animator.SetTrigger("BallKick");
     }
@@ -91,15 +88,28 @@ public class PlayerCharacterController : MonoBehaviour
     {
         var playerState = playerStateController.playerState;
 
-        if (playerState == PlayerState.WalkToBall)
+        switch (playerState)
         {
-            WalkToBall();
+            case PlayerState.Goal:
+                Finish(true);
+                break;
+            case PlayerState.Out:
+                Finish(false);
+                break;
+            case PlayerState.WalkToBall:
+                WalkToBall();
+                break;
+            case PlayerState.Dribbling:
+                Dribble();
+                break;
         }
+    }
 
-        if (playerState == PlayerState.Dribbling)
-        {
-            Dribble();
-        }
+    private void Finish(bool isGoal)
+    {
+        ball.LeaveControl();
+        animator.SetInteger("Speed", 0);
+        animator.SetTrigger(isGoal ? "Goal" : "Out");
     }
 
     private void WalkToBall()

@@ -6,7 +6,9 @@ public enum PlayerState
     WalkToBall,
     Dribbling,
     Shooting,
-    WaitingResult
+    WaitingShootResult,
+    Goal,
+    Out
 }
 
 public class PlayerStateController: MonoBehaviour

@@ -48,6 +48,8 @@ public class Player : MonoBehaviour
 
     private void SwipeControllerOnSwiped(Vector3 target)
     {
+        if (GameController.Default.finished) return;
+
         playerCharacterController.TriggerWalkToBall();
         shootTarget = target;
     }
@@ -59,7 +61,7 @@ public class Player : MonoBehaviour
         if (playerStateController.playerState != PlayerState.Shooting) return;
 
         playerAudio.PlayBallKickAudio();
-        playerStateController.ChangeState(PlayerState.WaitingResult);
+        playerStateController.ChangeState(PlayerState.WaitingShootResult);
         ShootBall(ballGameObject);
     }
 
@@ -85,12 +87,12 @@ public class Player : MonoBehaviour
 
     private void OnGoal()
     {
-        animator.SetTrigger("Goal");
+        playerStateController.ChangeState(PlayerState.Goal);
         cameraController.Goal();
     }
 
     private void OnOut()
     {
-        animator.SetTrigger("Out");
+        playerStateController.ChangeState(PlayerState.Out);
     }
 }

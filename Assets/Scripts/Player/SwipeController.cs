@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 [RequireComponent (typeof (InputController))]
@@ -87,11 +86,11 @@ public class SwipeController : MonoBehaviour
 
         if (checkPoints.Count < 2) return;
 
-        var furthestPoint = checkPoints
-            .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
-
-        var curveDirection = (furthestPoint - startPosition).normalized;
-        Debug.Log($"Curve direction {curveDirection}");
+        // var furthestPoint = checkPoints
+        //     .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
+        //
+        // var curveDirection = (furthestPoint - startPosition).normalized;
+        // Debug.Log($"Curve direction {curveDirection}");
 
         var target = Utils.GetWorldPosition(Camera.main, endPosition);
 

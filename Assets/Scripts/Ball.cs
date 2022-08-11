@@ -28,7 +28,6 @@ public class Ball : MonoBehaviour
 
     public void Shoot(Vector3 velocity)
     {
-        Uncontrol();
         ballRigidbody.velocity = velocity;
     }
 
@@ -40,14 +39,16 @@ public class Ball : MonoBehaviour
         owner = characterController;
     }
 
-    public void Uncontrol()
+    public void LeaveControl()
     {
-        if (owner)
-        {
-            SetPosition(owner.ballOwnDistance);
-            owner = null;
-        }
+        owner = null;
+    }
+
+    public void PrepareShooting()
+    {
         SetVelocityToZero();
+        ballRigidbody.velocity = owner.transform.forward * -2;
+        owner = null;
     }
 
     private void Dribble()

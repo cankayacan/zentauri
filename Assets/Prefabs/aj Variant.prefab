@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 873892300}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.028, z: 0.153}
+  m_LocalPosition: {x: 0, y: 0.0042, z: 0.0906}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -435,14 +435,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   sprintSpeed: 10
-  rotationSmoothTime: 0.12
+  rotationSpeed: 200
   speedChangeRate: 10
   grounded: 1
   groundedOffset: 0.01
   footTransform: {fileID: 0}
   goalTransform: {fileID: 0}
-  maxDurationForBallPredictionInMs: 1
   ballOwnDistance: 0.5
+  ballRangeDetectInHeight: 0.3
   ballDribblingDistance: 1
   shootingDistance: 20
 --- !u!114 &5337322274823046304
