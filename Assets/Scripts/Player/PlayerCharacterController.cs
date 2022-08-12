@@ -161,9 +161,15 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void ShootWhenPlayerInShootingArea()
     {
-        var distanceToGoal = (transform.position - goalTransform.position).magnitude;
+        var directionToGoal = goalTransform.position - transform.position;
+
+        var distanceToGoal = (directionToGoal).magnitude;
 
         if (distanceToGoal > shootingDistance) return;
+
+        var headingGoal = Vector3.Dot(transform.forward.normalized, directionToGoal.normalized) > 0.8;
+
+        if (!headingGoal) return;
 
         TriggerShooting();
     }

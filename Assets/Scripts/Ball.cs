@@ -46,6 +46,8 @@ public class Ball : MonoBehaviour
 
     public void PrepareShooting()
     {
+        if (owner == null) return;
+
         SetVelocityToZero();
         ballRigidbody.velocity = owner.transform.forward * -2;
         owner = null;
