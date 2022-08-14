@@ -22,7 +22,7 @@ public class CameraController: MonoBehaviour
 
     private void MoveGoalCamera()
     {
-        goalCamera.transform.Translate(Vector3.forward * Time.deltaTime * 10);
+        goalCamera.transform.Translate(Vector3.right * Time.deltaTime);
     }
 }
 
