@@ -1,17 +1,19 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCharacterController : MonoBehaviour
 {
-    private float rotationVelocity;
     private float targetRotationAngle;
+    private bool stopMotion;
 
+    private Vector3? lastPosition;
     private Ball ball;
     private Animator animator;
     private CharacterController characterController;
     private PlayerStateController playerStateController;
 
-    public Vector3 speed => characterController.velocity;
+    public Vector3 speed;
 
     [Header("Player")] [Tooltip("Move speed of the character in m/s")]
     public float moveSpeed = 4;
@@ -52,6 +54,11 @@ public class PlayerCharacterController : MonoBehaviour
     [Tooltip("When the character has this distance to the goal, shoot the ball.")]
     public float shootingDistance = 20f;
 
+    public void Start()
+    {
+        TriggerWalkToBall();
+    }
+
     public void Awake()
     {
         ball = FindObjectOfType<Ball>();
@@ -64,11 +71,38 @@ public class PlayerCharacterController : MonoBehaviour
     {
         GroundedCheck();
         HandlePlayerState();
+
+        if (!lastPosition.HasValue)
+        {
+            lastPosition = transform.position;
+            return;
+        }
+
+        speed = (transform.position - lastPosition.Value) / (Time.deltaTime);
+        lastPosition = transform.position;
     }
 
     public void TriggerWalkToBall()
     {
         playerStateController.ChangeState(PlayerState.WalkToBall);
+    }
+
+    private void TriggerShooting()
+    {
+        playerStateController.ChangeState(PlayerState.Shooting);
+        animator.SetTrigger("BallKick");
+        ball.SetVelocityToZero();
+    }
+
+    public void WaitSwipe()
+    {
+        animator.enabled = false;
+    }
+
+    public void HandleSwipe()
+    {
+        animator.enabled = true;
+        ball.PrepareShooting();
     }
 
     private void TriggerDribbling()
@@ -77,19 +111,14 @@ public class PlayerCharacterController : MonoBehaviour
         playerStateController.ChangeState(PlayerState.Dribbling);
     }
 
-    private void TriggerShooting()
-    {
-        ball.PrepareShooting();
-        playerStateController.ChangeState(PlayerState.Shooting);
-        animator.SetTrigger("BallKick");
-    }
-
     private void HandlePlayerState()
     {
         var playerState = playerStateController.playerState;
 
         switch (playerState)
         {
+            case PlayerState.Shooting:
+                break;
             case PlayerState.Goal:
                 Finish(true);
                 break;
@@ -123,7 +152,7 @@ public class PlayerCharacterController : MonoBehaviour
     {
         RotateToPosition(goalTransform.position);
         Move(moveSpeed);
-        ShootWhenPlayerInShootingArea();
+        StopMotionIfPlayerInShootingArea();
     }
 
     private void Move(float targetSpeed)
@@ -152,14 +181,14 @@ public class PlayerCharacterController : MonoBehaviour
 
         if (!Physics.Raycast(playerPosition, transform.forward, out _, ballOwnDistance, layerMask)) return;
 
-        ShootWhenPlayerInShootingArea();
+        StopMotionIfPlayerInShootingArea();
 
         if (playerStateController.playerState == PlayerState.Shooting) return;
 
         TriggerDribbling();
     }
 
-    private void ShootWhenPlayerInShootingArea()
+    private void StopMotionIfPlayerInShootingArea()
     {
         var directionToGoal = goalTransform.position - transform.position;
 

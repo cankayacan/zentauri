@@ -23,6 +23,7 @@ public class Ball : MonoBehaviour
 
         Dribble();
 
+        Debug.Log($"Owner speed {owner.speed}");
         ballRigidbody.angularVelocity = owner.transform.right * owner.speed.magnitude;
     }
 
@@ -48,7 +49,6 @@ public class Ball : MonoBehaviour
     {
         if (owner == null) return;
 
-        SetVelocityToZero();
         ballRigidbody.velocity = owner.transform.forward * -2;
         owner = null;
     }
@@ -68,7 +68,7 @@ public class Ball : MonoBehaviour
         transform.position = ballPosition;
     }
 
-    private void SetVelocityToZero()
+    public void SetVelocityToZero()
     {
         ballRigidbody.velocity = Vector3.zero;
         ballRigidbody.angularVelocity = Vector3.zero;

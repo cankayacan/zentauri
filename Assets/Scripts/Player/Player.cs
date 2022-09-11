@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
     {
         if (GameController.Default.finished) return;
 
-        playerCharacterController.TriggerWalkToBall();
+        playerCharacterController.HandleSwipe();
         shootTarget = target;
     }
 
