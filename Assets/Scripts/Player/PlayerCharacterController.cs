@@ -24,9 +24,6 @@ public class PlayerCharacterController : MonoBehaviour
     [Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 1000f)]
     public float rotationSpeed = 200;
 
-    [Tooltip("Acceleration and deceleration")]
-    public float speedChangeRate = 10.0f;
-
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
     public bool grounded = true;
@@ -44,9 +41,6 @@ public class PlayerCharacterController : MonoBehaviour
     [Header("Ball")]
     [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
     public float ballOwnDistance = .5f;
-
-    [Tooltip("Detect ball with a ray cast beamed from this height.")]
-    public float ballRangeDetectInHeight = .3f;
 
     [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
     public float ballDribblingDistance = 1f;
@@ -71,15 +65,7 @@ public class PlayerCharacterController : MonoBehaviour
     {
         GroundedCheck();
         HandlePlayerState();
-
-        if (!lastPosition.HasValue)
-        {
-            lastPosition = transform.position;
-            return;
-        }
-
-        speed = (transform.position - lastPosition.Value) / (Time.deltaTime);
-        lastPosition = transform.position;
+        CalculateSpeed();
     }
 
     public void TriggerWalkToBall()
@@ -175,11 +161,16 @@ public class PlayerCharacterController : MonoBehaviour
         var layerMask = LayerMask.GetMask("Ball");
 
         var position = transform.position;
-        var playerPosition = new Vector3(position.x, ballRangeDetectInHeight, position.z);
+        var playerPosition = new Vector3(position.x, footTransform.position.y, position.z);
 
         Debug.DrawRay(playerPosition, transform.forward, Color.red);
 
-        if (!Physics.Raycast(playerPosition, transform.forward, out _, ballOwnDistance, layerMask)) return;
+        if (!Physics.Raycast(playerPosition, transform.forward, out RaycastHit hitInfo, ballOwnDistance, layerMask))
+        {
+            return;
+        }
+
+        Debug.Log($"Ball in range {hitInfo.collider.gameObject.name}");
 
         StopMotionIfPlayerInShootingArea();
 
@@ -210,5 +201,17 @@ public class PlayerCharacterController : MonoBehaviour
         if (grounded) return;
 
         characterController.Move(Physics.gravity * Time.fixedDeltaTime);
+    }
+
+    private void CalculateSpeed()
+    {
+        var position = transform.position;
+
+        if (lastPosition.HasValue)
+        {
+            speed = (position - lastPosition.Value) / (Time.deltaTime);
+        }
+
+        lastPosition = position;
     }
 }
