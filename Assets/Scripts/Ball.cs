@@ -23,7 +23,6 @@ public class Ball : MonoBehaviour
 
         Dribble();
 
-        Debug.Log($"Owner speed {owner.speed}");
         ballRigidbody.angularVelocity = owner.transform.right * owner.speed.magnitude;
     }
 
