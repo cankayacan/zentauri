@@ -123,7 +123,6 @@ public class PlayerCharacterController : MonoBehaviour
     private void Finish(bool isGoal)
     {
         ball.LeaveControl();
-        animator.SetInteger("Speed", 0);
         animator.SetTrigger(isGoal ? "Goal" : "Out");
     }
 
@@ -144,7 +143,6 @@ public class PlayerCharacterController : MonoBehaviour
     private void Move(float targetSpeed)
     {
         characterController.Move(transform.forward * (targetSpeed * Time.deltaTime));
-        animator.SetInteger("Speed", (int)targetSpeed);
     }
 
     private void RotateToPosition(Vector3 targetPosition)
@@ -209,7 +207,9 @@ public class PlayerCharacterController : MonoBehaviour
 
         if (lastPosition.HasValue)
         {
-            speed = (position - lastPosition.Value) / (Time.deltaTime);
+            speed = (position - lastPosition.Value) / Time.deltaTime;
+            Debug.Log($"Position {position} last {lastPosition} speed {speed} magn {speed.magnitude}");
+            animator.SetInteger("Speed", (int)speed.magnitude);
         }
 
         lastPosition = position;

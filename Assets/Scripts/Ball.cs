@@ -24,6 +24,7 @@ public class Ball : MonoBehaviour
         Dribble();
 
         ballRigidbody.angularVelocity = owner.transform.right * owner.speed.magnitude;
+        Debug.Log($"Angular velocity {ballRigidbody.angularVelocity}");
     }
 
     public void Shoot(Vector3 velocity)
@@ -37,10 +38,13 @@ public class Ball : MonoBehaviour
 
         SetVelocityToZero();
         owner = characterController;
+
+        IgnoreCollisions(true);
     }
 
     public void LeaveControl()
     {
+        IgnoreCollisions(false);
         owner = null;
     }
 
@@ -49,6 +53,7 @@ public class Ball : MonoBehaviour
         if (owner == null) return;
 
         ballRigidbody.velocity = owner.transform.forward * -2;
+        IgnoreCollisions(false);
         owner = null;
     }
 
@@ -109,5 +114,12 @@ public class Ball : MonoBehaviour
 
         ballAudio.PlayOutAudioClip();
         GameController.Default.PublishOut();
+    }
+
+    private void IgnoreCollisions(bool ignore)
+    {
+        if (owner == null) return;
+
+        Physics.IgnoreCollision(owner.GetComponent<Collider>(), GetComponent<Collider>(), ignore);
     }
 }
