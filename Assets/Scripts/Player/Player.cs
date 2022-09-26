@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
         var ball = ballGameObject.GetComponent<Ball>();
         ball.Shoot(velocity);
 
-        Invoke("AfterShootBall", 3f);
+        Invoke("AfterShootBall", 2f);
 
         animator.SetInteger("Speed", 0);
     }
@@ -85,16 +85,18 @@ public class Player : MonoBehaviour
         if (GameController.Default.finished) return;
 
         playerCharacterController.TriggerWalkToBall();
+        cameraController.SwitchCamera(CameraType.Moving);
     }
 
     private void OnGoal()
     {
         playerStateController.ChangeState(PlayerState.Goal);
-        cameraController.Goal();
+        cameraController.SwitchCamera(CameraType.Finish);
     }
 
     private void OnOut()
     {
         playerStateController.ChangeState(PlayerState.Out);
+        cameraController.SwitchCamera(CameraType.Finish);
     }
 }

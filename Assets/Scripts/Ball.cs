@@ -6,8 +6,9 @@ public class Ball : MonoBehaviour
     private BallAudio ballAudio;
     private Rigidbody ballRigidbody;
     private float ballGroundedHeight;
-    public PlayerCharacterController owner;
 
+    public float angularVelocityMultiplier = 1.5f;
+    public PlayerCharacterController owner;
     public Vector3 speed => ballRigidbody.velocity;
 
     public void Awake()
@@ -23,7 +24,7 @@ public class Ball : MonoBehaviour
 
         Dribble();
 
-        ballRigidbody.angularVelocity = owner.transform.right * owner.speed.magnitude;
+        ballRigidbody.angularVelocity = owner.transform.right * (owner.speed.magnitude * angularVelocityMultiplier);
         Debug.Log($"Angular velocity {ballRigidbody.angularVelocity}");
     }
 

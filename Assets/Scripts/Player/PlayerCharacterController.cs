@@ -12,6 +12,7 @@ public class PlayerCharacterController : MonoBehaviour
     private Animator animator;
     private CharacterController characterController;
     private PlayerStateController playerStateController;
+    private CameraController cameraController;
 
     public Vector3 speed;
 
@@ -59,6 +60,7 @@ public class PlayerCharacterController : MonoBehaviour
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         playerStateController = GetComponent<PlayerStateController>();
+        cameraController = GetComponent<CameraController>();
     }
 
     public void Update()
@@ -78,6 +80,7 @@ public class PlayerCharacterController : MonoBehaviour
         playerStateController.ChangeState(PlayerState.Shooting);
         animator.SetTrigger("BallKick");
         ball.SetVelocityToZero();
+        cameraController.SwitchCamera(CameraType.Shooting);
     }
 
     public void WaitSwipe()
