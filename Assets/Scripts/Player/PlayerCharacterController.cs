@@ -13,6 +13,7 @@ public class PlayerCharacterController : MonoBehaviour
     private CharacterController characterController;
     private PlayerStateController playerStateController;
     private CameraController cameraController;
+    private PlayerEffectController playerEffectController;
 
     public Vector3 speed;
 
@@ -61,6 +62,7 @@ public class PlayerCharacterController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         playerStateController = GetComponent<PlayerStateController>();
         cameraController = GetComponent<CameraController>();
+        playerEffectController = GetComponent<PlayerEffectController>();
     }
 
     public void Update()
@@ -73,6 +75,7 @@ public class PlayerCharacterController : MonoBehaviour
     public void TriggerWalkToBall()
     {
         playerStateController.ChangeState(PlayerState.WalkToBall);
+        playerEffectController.EnableWalkParticles();
     }
 
     private void TriggerShooting()
@@ -81,6 +84,7 @@ public class PlayerCharacterController : MonoBehaviour
         animator.SetTrigger("BallKick");
         ball.SetVelocityToZero();
         cameraController.SwitchCamera(CameraType.Shooting);
+        playerEffectController.DisableWalkParticles();
     }
 
     public void WaitSwipe()
@@ -92,6 +96,7 @@ public class PlayerCharacterController : MonoBehaviour
     {
         animator.enabled = true;
         ball.PrepareShooting();
+        playerEffectController.EnableShootingParticles();
     }
 
     private void TriggerDribbling()
@@ -125,6 +130,7 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Finish(bool isGoal)
     {
+        Debug.Log("Finishing");
         ball.LeaveControl();
         animator.SetTrigger(isGoal ? "Goal" : "Out");
     }
@@ -211,7 +217,6 @@ public class PlayerCharacterController : MonoBehaviour
         if (lastPosition.HasValue)
         {
             speed = (position - lastPosition.Value) / Time.deltaTime;
-            Debug.Log($"Position {position} last {lastPosition} speed {speed} magn {speed.magnitude}");
             animator.SetInteger("Speed", (int)speed.magnitude);
         }
 

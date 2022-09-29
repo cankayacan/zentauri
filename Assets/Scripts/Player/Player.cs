@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof (PlayerCharacterController), typeof (PlayerStateController))]
 [RequireComponent(typeof (CameraController), typeof (SwipeController))]
 [RequireComponent(typeof (PlayerAudio), typeof (Animator))]
-[RequireComponent(typeof (PlayerInput))]
+[RequireComponent(typeof (PlayerInput), typeof (PlayerEffectController))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private int shootToGoalAngle = 15;

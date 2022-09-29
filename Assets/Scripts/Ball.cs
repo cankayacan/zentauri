@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof (BallAudio))]
@@ -6,6 +8,8 @@ public class Ball : MonoBehaviour
     private BallAudio ballAudio;
     private Rigidbody ballRigidbody;
     private float ballGroundedHeight;
+    private List<ParticleSystem> particles;
+    private bool showingParticles;
 
     public float angularVelocityMultiplier = 1.5f;
     public PlayerCharacterController owner;
@@ -16,16 +20,17 @@ public class Ball : MonoBehaviour
         ballAudio = GetComponent<BallAudio>();
         ballRigidbody = GetComponent<Rigidbody>();
         ballGroundedHeight = transform.position.y;
+        particles = GetComponentsInChildren<ParticleSystem>().ToList();
     }
 
     public void Update()
     {
+        UpdateParticles();
+
         if (owner == null) return;
 
         Dribble();
-
-        ballRigidbody.angularVelocity = owner.transform.right * (owner.speed.magnitude * angularVelocityMultiplier);
-        Debug.Log($"Angular velocity {ballRigidbody.angularVelocity}");
+        UpdateAngularVelocity();
     }
 
     public void Shoot(Vector3 velocity)
@@ -122,5 +127,30 @@ public class Ball : MonoBehaviour
         if (owner == null) return;
 
         Physics.IgnoreCollision(owner.GetComponent<Collider>(), GetComponent<Collider>(), ignore);
+    }
+
+    private void UpdateAngularVelocity()
+    {
+        ballRigidbody.angularVelocity = owner.transform.right * (owner.speed.magnitude * angularVelocityMultiplier);
+    }
+
+    private void UpdateParticles()
+    {
+        var speedMagnitude = speed.magnitude;
+
+        var showParticles = speedMagnitude > 8;
+
+        if (showingParticles == showParticles) return;
+
+        showingParticles = showParticles;
+
+        if (showParticles)
+        {
+            particles.ForEach(p => p.Play());
+        }
+        else
+        {
+            particles.ForEach(p => p.Stop());
+        }
     }
 }
