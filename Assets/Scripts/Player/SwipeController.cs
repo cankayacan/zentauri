@@ -72,7 +72,6 @@ public class SwipeController : MonoBehaviour
 
     private void FireSwiped()
     {
-        Debug.Log($"Path count {path.Count}");
         if (path.Count < 3) return;
 
         var startPosition = path[0];
@@ -95,8 +94,6 @@ public class SwipeController : MonoBehaviour
         var target = Utils.GetWorldPosition(Camera.main, endPosition);
 
         if (!target.HasValue) return;
-
-        Debug.Log($"Target {target}");
 
         Swiped?.Invoke(target.Value);
     }

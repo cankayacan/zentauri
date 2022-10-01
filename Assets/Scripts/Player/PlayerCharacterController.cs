@@ -6,6 +6,7 @@ public class PlayerCharacterController : MonoBehaviour
 {
     private float targetRotationAngle;
     private bool stopMotion;
+    private float footHeight;
 
     private Vector3? lastPosition;
     private Ball ball;
@@ -17,14 +18,23 @@ public class PlayerCharacterController : MonoBehaviour
 
     public Vector3 speed;
 
-    [Header("Player")] [Tooltip("Move speed of the character in m/s")]
+    [Header("Player Speed")]
+    [Tooltip("Move speed of the character in m/s")]
     public float moveSpeed = 4;
 
     [Tooltip("Sprint speed of the character in m/s")]
     public float sprintSpeed = 10;
 
-    [Tooltip("How fast the character turns to face movement direction")] [Range(0.0f, 1000f)]
+    [Header("Rotation")]
+    [Tooltip("How fast the character turns to face movement direction")]
+    [Range(0.0f, 1000f)]
     public float rotationSpeed = 200;
+
+    [Tooltip("The max angle, the player needs to have before moving")]
+    public float maxAngleBeforeWalking = 5f;
+
+    [Tooltip("The max angle, the player needs to have  before shooting")]
+    public float maxAngleBeforeDribbling = 5f;
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -52,6 +62,7 @@ public class PlayerCharacterController : MonoBehaviour
 
     public void Start()
     {
+        footHeight = footTransform.position.y;
         TriggerWalkToBall();
     }
 
@@ -74,6 +85,7 @@ public class PlayerCharacterController : MonoBehaviour
 
     public void TriggerWalkToBall()
     {
+        Debug.Log("TriggerWalkToBall");
         playerStateController.ChangeState(PlayerState.WalkToBall);
         playerEffectController.EnableWalkParticles();
     }
@@ -130,23 +142,29 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Finish(bool isGoal)
     {
-        Debug.Log("Finishing");
         ball.LeaveControl();
         animator.SetTrigger(isGoal ? "Goal" : "Out");
     }
 
     private void WalkToBall()
     {
-        RotateToPosition(ball.transform.position);
-        Move(sprintSpeed);
+        var rotationAngleLeft = RotateToPosition(ball.transform.position);
+        Debug.Log($"rotationAngleLeft {rotationAngleLeft}");
+        if (rotationAngleLeft <= maxAngleBeforeWalking)
+        {
+            Move(sprintSpeed);
+        }
         CheckBallInRange();
     }
 
     private void Dribble()
     {
-        RotateToPosition(goalTransform.position);
-        Move(moveSpeed);
-        StopMotionIfPlayerInShootingArea();
+        var rotationAngleLeft = RotateToPosition(goalTransform.position);
+        if (rotationAngleLeft <= maxAngleBeforeDribbling)
+        {
+            StopMotionIfPlayerInShootingArea();
+            Move(moveSpeed);
+        }
     }
 
     private void Move(float targetSpeed)
@@ -154,13 +172,15 @@ public class PlayerCharacterController : MonoBehaviour
         characterController.Move(transform.forward * (targetSpeed * Time.deltaTime));
     }
 
-    private void RotateToPosition(Vector3 targetPosition)
+    private float RotateToPosition(Vector3 targetPosition)
     {
         var direction = targetPosition - transform.position;
         var targetRotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
 
         Quaternion targetRotationQuaternion = Quaternion.Euler(new Vector3(0, targetRotation, 0));
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotationQuaternion, rotationSpeed * Time.deltaTime);
+
+        return Math.Abs(transform.rotation.eulerAngles.y - targetRotationQuaternion.eulerAngles.y);
     }
 
     private void CheckBallInRange()
@@ -168,7 +188,7 @@ public class PlayerCharacterController : MonoBehaviour
         var layerMask = LayerMask.GetMask("Ball");
 
         var position = transform.position;
-        var playerPosition = new Vector3(position.x, footTransform.position.y, position.z);
+        var playerPosition = new Vector3(position.x, footHeight, position.z);
 
         Debug.DrawRay(playerPosition, transform.forward, Color.red);
 
@@ -176,8 +196,6 @@ public class PlayerCharacterController : MonoBehaviour
         {
             return;
         }
-
-        Debug.Log($"Ball in range {hitInfo.collider.gameObject.name}");
 
         StopMotionIfPlayerInShootingArea();
 

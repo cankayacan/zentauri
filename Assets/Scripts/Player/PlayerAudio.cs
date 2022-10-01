@@ -16,11 +16,13 @@ public class PlayerAudio: MonoBehaviour
 
     public void FootStep()
     {
+        if (!walkingAudioClip) return;
         audioSource.PlayOneShot(walkingAudioClip);
     }
 
     public void PlayBallKickAudio()
     {
+        if (!ballKickAudioClip) return;
         audioSource.PlayOneShot(ballKickAudioClip);
     }
 }
