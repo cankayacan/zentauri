@@ -2,16 +2,17 @@ using UnityEngine;
 
 public class ProjectileHelper : MonoBehaviour
 {
-    public static Vector3 CalculateVelocity(Vector3 currentPos, Vector3 targetPos, float initialAngle)
+    public static Vector3 CalculateVelocity(Vector3 currentPos, Vector3 targetPos)
     {
         var gravity = Physics.gravity.magnitude;
-        var angle = initialAngle * Mathf.Deg2Rad;
 
         var planarTarget = new Vector3(targetPos.x, 0, targetPos.z);
         var planarPosition = new Vector3(currentPos.x, 0, currentPos.z);
 
         var distance = Vector3.Distance(planarTarget, planarPosition);
         var yOffset = currentPos.y - targetPos.y;
+
+        var angle = Mathf.Atan2(Mathf.Abs(yOffset) * 1.5f, distance);
 
         var initialVelocity = (1 / Mathf.Cos(angle)) *
                               Mathf.Sqrt((0.5f * gravity * Mathf.Pow(distance, 2)) /

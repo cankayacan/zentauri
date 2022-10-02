@@ -7,8 +7,6 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof (PlayerInput), typeof (PlayerEffectController))]
 public class Player : MonoBehaviour
 {
-    [SerializeField] private int shootToGoalAngle = 15;
-
     private Vector3? shootTarget;
 
     private PlayerCharacterController playerCharacterController;
@@ -70,7 +68,7 @@ public class Player : MonoBehaviour
     private void ShootBall(GameObject ballGameObject)
     {
         var ballPosition = ballGameObject.transform.position;
-        var velocity = ProjectileHelper.CalculateVelocity(ballPosition, shootTarget!.Value, shootToGoalAngle);
+        var velocity = ProjectileHelper.CalculateVelocity(ballPosition, shootTarget!.Value);
 
         var ball = ballGameObject.GetComponent<Ball>();
         ball.Shoot(velocity);
