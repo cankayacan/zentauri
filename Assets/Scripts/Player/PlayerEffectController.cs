@@ -7,16 +7,19 @@ public class PlayerEffectController : MonoBehaviour
 
     public void EnableWalkParticles()
     {
+        if (!walkingParticles) return;
         walkingParticles.Play();
     }
 
     public void DisableWalkParticles()
     {
+        if (!walkingParticles) return;
         walkingParticles.Stop();
     }
 
     public void EnableShootingParticles()
     {
+        if (!shootingParticles) return;
         shootingParticles.Play();
     }
 }

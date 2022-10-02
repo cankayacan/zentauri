@@ -19,4 +19,11 @@ public static class Utils
 
         return null;
     }
+
+    public static Quaternion GetTargetQuaternion(Vector3 currentPosition, Vector3 targetPosition)
+    {
+        var direction = targetPosition - currentPosition;
+        var targetRotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        return Quaternion.Euler(new Vector3(0, targetRotation, 0));
+    }
 }

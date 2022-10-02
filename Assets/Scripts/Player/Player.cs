@@ -77,7 +77,7 @@ public class Player : MonoBehaviour
 
         Invoke("AfterShootBall", 2f);
 
-        animator.SetInteger("Speed", 0);
+        animator.SetFloat("Speed", 0f);
     }
 
     private void AfterShootBall()

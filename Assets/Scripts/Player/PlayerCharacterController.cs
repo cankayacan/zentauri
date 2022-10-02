@@ -34,7 +34,7 @@ public class PlayerCharacterController : MonoBehaviour
     public float maxAngleBeforeWalking = 5f;
 
     [Tooltip("The max angle, the player needs to have  before shooting")]
-    public float maxAngleBeforeDribbling = 5f;
+    public float maxAngleBeforeStopMotion = 5f;
 
     [Header("Player Grounded")]
     [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
@@ -148,8 +148,7 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void WalkToBall()
     {
-        var rotationAngleLeft = RotateToPosition(ball.transform.position);
-        Debug.Log($"rotationAngleLeft {rotationAngleLeft}");
+        var rotationAngleLeft = RotateToBall();
         if (rotationAngleLeft <= maxAngleBeforeWalking)
         {
             Move(sprintSpeed);
@@ -159,12 +158,9 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Dribble()
     {
-        var rotationAngleLeft = RotateToPosition(goalTransform.position);
-        if (rotationAngleLeft <= maxAngleBeforeDribbling)
-        {
-            StopMotionIfPlayerInShootingArea();
-            Move(moveSpeed);
-        }
+        RotateToGoal();
+        Move(moveSpeed);
+        StopMotionIfPlayerInShootingArea();
     }
 
     private void Move(float targetSpeed)
@@ -172,15 +168,24 @@ public class PlayerCharacterController : MonoBehaviour
         characterController.Move(transform.forward * (targetSpeed * Time.deltaTime));
     }
 
-    private float RotateToPosition(Vector3 targetPosition)
+    private float RotateToBall()
     {
-        var direction = targetPosition - transform.position;
-        var targetRotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        var targetPosition = ball.transform.position;
+        var targetRotation = Utils.GetTargetQuaternion(transform.position, targetPosition);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        return GetAngleToTurn(targetPosition);
+    }
 
-        Quaternion targetRotationQuaternion = Quaternion.Euler(new Vector3(0, targetRotation, 0));
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotationQuaternion, rotationSpeed * Time.deltaTime);
+    private void RotateToGoal()
+    {
+        var targetRotation = Utils.GetTargetQuaternion(transform.position, goalTransform.position);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+    }
 
-        return Math.Abs(transform.rotation.eulerAngles.y - targetRotationQuaternion.eulerAngles.y);
+    private float GetAngleToTurn(Vector3 targetPosition)
+    {
+        var targetRotation = Utils.GetTargetQuaternion(transform.position, targetPosition);
+        return Math.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y);
     }
 
     private void CheckBallInRange()
@@ -216,6 +221,10 @@ public class PlayerCharacterController : MonoBehaviour
 
         if (!headingGoal) return;
 
+        var goalAngle = GetAngleToTurn(goalTransform.position);
+
+        if (goalAngle > maxAngleBeforeStopMotion) return;
+
         TriggerShooting();
     }
 
@@ -235,7 +244,7 @@ public class PlayerCharacterController : MonoBehaviour
         if (lastPosition.HasValue)
         {
             speed = (position - lastPosition.Value) / Time.deltaTime;
-            animator.SetInteger("Speed", (int)speed.magnitude);
+            animator.SetFloat("Speed", speed.magnitude);
         }
 
         lastPosition = position;
