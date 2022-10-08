@@ -17,6 +17,8 @@ public class Player : MonoBehaviour
     private PlayerAudio playerAudio;
     private Animator animator;
 
+    public float shootSpeed = 30f;
+
     private void Awake()
     {
         playerCharacterController = GetComponent<PlayerCharacterController>();
@@ -68,7 +70,7 @@ public class Player : MonoBehaviour
     private void ShootBall(GameObject ballGameObject)
     {
         var ballPosition = ballGameObject.transform.position;
-        var velocity = ProjectileHelper.CalculateVelocity(ballPosition, shootTarget!.Value);
+        var velocity = ProjectileHelper.CalculateVelocity(shootSpeed, ballPosition, shootTarget!.Value);
 
         var ball = ballGameObject.GetComponent<Ball>();
         ball.Shoot(velocity);
