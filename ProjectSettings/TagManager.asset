@@ -9,6 +9,8 @@ TagManager:
   - BallKickDetector
   - Out
   - GoalPost
+  - Water
+  - Ground
   layers:
   - Default
   - TransparentFX

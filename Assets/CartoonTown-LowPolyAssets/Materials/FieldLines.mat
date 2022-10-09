@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FieldLines
-  m_Shader: {fileID: -6465566751694194690, guid: 546bc74e0c6b24b0f98901bde6cc1068,
+  m_Shader: {fileID: -6465566751694194690, guid: 2f7c04f912dbb473fbabfe3be1e209e2,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -72,6 +72,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_4d7510f13ea042f28b900f99ec5dc8b0_Texture_1:
+        m_Texture: {fileID: 2800000, guid: c14d7f91aa55c4440add666a856cfcee, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_755bdb3b87c14618b9008806dc18b6e0_Texture_1:

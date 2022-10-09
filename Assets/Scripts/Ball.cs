@@ -9,6 +9,7 @@ public class Ball : MonoBehaviour
     private Rigidbody ballRigidbody;
     private float ballGroundedHeight;
     private List<ParticleSystem> particles;
+    private bool collidedAfterShooting;
     private bool showingParticles;
 
     public float angularVelocityMultiplier = 1.5f;
@@ -36,6 +37,9 @@ public class Ball : MonoBehaviour
     public void Shoot(Vector3 velocity)
     {
         ballRigidbody.velocity = velocity;
+        Debug.Log($"setting collidedAfterShooting to false");
+        collidedAfterShooting = false;
+        Debug.Log($"setting collidedAfterShooting to false finished");
     }
 
     public void Control(PlayerCharacterController characterController)
@@ -104,6 +108,12 @@ public class Ball : MonoBehaviour
         {
             ballAudio.PlayGoalPostAudioClip();
         }
+
+        var collidedWithGroundOrPlayer = other.CompareTag("Ground") || other.CompareTag("Player");
+        if (!collidedWithGroundOrPlayer)
+        {
+            collidedAfterShooting = true;
+        }
     }
 
     private void HandleGoal()
@@ -139,6 +149,8 @@ public class Ball : MonoBehaviour
         var speedMagnitude = speed.magnitude;
 
         var showParticles = speedMagnitude > 8;
+
+        if (collidedAfterShooting) showParticles = false;
 
         if (showingParticles == showParticles) return;
 
