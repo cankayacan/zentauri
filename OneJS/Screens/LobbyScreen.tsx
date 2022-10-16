@@ -1,7 +1,15 @@
 import { h, render } from "preact";
 import { useEffect, useState } from "preact/hooks";
-import { Button } from "./Button";
-import { Spinner } from "./Spinner";
+import { Style } from "preact/jsx";
+import { Button } from "../Components/Button";
+import { Spinner } from "../Components/Spinner";
+
+const backgroundStyle: Style = {
+  width: "100%",
+  height: "100%",
+  unityBackgroundScaleMode: "ScaleAndCrop",
+  backgroundImage: "images/bg.png",
+};
 
 const App = () => {
   const [loading, setLoading] = useState(false);
@@ -22,11 +30,8 @@ const App = () => {
   };
 
   return (
-    <div
-      class="flex-row w-max h-max"
-      style={{ backgroundImage: "images/bg.png" }}
-    >
-      <div class="relative w-28">
+    <div class="flex-row justify-between" style={backgroundStyle}>
+      <div class="relative w-56">
         {loading && (
           <div class="absolute flex-row items-center bottom-5 left-5">
             <div style={{ width: 25, marginRight: 5 }}>
@@ -37,12 +42,24 @@ const App = () => {
         )}
       </div>
 
-      <div class="grow">
-        <image image={playerRenderTexture} />
-      </div>
+      <image
+        image={playerRenderTexture}
+        style={{
+          width: "50%",
+          height: "100%",
+          unityBackgroundScaleMode: "ScaleAndCrop",
+        }}
+      />
 
-      <div class="self-end w-28 pb-5 pr-5 ">
-        <Button text="Start" onClick={startGame} enabled={!loading} />
+      <div class="self-end w-56 pb-5 pr-5">
+        <Button
+          style={{
+            borderRadius: [16, 16, 0, 16],
+          }}
+          text="Start"
+          onClick={startGame}
+          enabled={!loading}
+        />
       </div>
     </div>
   );

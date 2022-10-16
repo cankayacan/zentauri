@@ -1,7 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/GameScreen/GameScreen.uss?fileID=7433441132597879392&amp;guid=3fdb057724ec42f8aab39c7565fd1ec7&amp;type=3#GameScreen" />
-    <Style src="project://database/Assets/UI/Common.uss?fileID=7433441132597879392&amp;guid=93272eb45cf54169879c98003bdaf05a&amp;type=3#Common" />
-    <ui:VisualElement class="footer">
-        <ui:Button text="Restart" name="restart-button" class="btn btn-restart" />
-    </ui:VisualElement>
-</ui:UXML>
