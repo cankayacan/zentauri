@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public static class Utils
@@ -25,5 +26,11 @@ public static class Utils
         var direction = targetPosition - currentPosition;
         var targetRotation = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         return Quaternion.Euler(new Vector3(0, targetRotation, 0));
+    }
+    
+    public static float GetAngleToTurn(Transform transform, Vector3 targetPosition)
+    {
+        var targetRotation = Utils.GetTargetQuaternion(transform.position, targetPosition);
+        return Math.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y);
     }
 }

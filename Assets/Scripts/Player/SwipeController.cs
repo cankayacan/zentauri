@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent (typeof (InputController))]
+[RequireComponent(typeof (PlayerInput))]
 public class SwipeController : MonoBehaviour
 {
     [SerializeField] private GameObject trailPrefab;

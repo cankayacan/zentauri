@@ -38,9 +38,7 @@ public class Ball : MonoBehaviour
     public void Shoot(Vector3 velocity)
     {
         ballRigidbody.velocity = velocity;
-        Debug.Log($"setting collidedAfterShooting to false");
         collidedAfterShooting = false;
-        Debug.Log($"setting collidedAfterShooting to false finished");
     }
 
     public void Control(PlayerCharacterController characterController)
