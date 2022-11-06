@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerCharacterController : MonoBehaviour
 {
     private Vector3? lastPosition;
-    private Ball ball;
     private Animator animator;
     private CharacterController characterController;
     private PlayerStateController playerStateController;
@@ -20,14 +19,13 @@ public class PlayerCharacterController : MonoBehaviour
     public float groundedOffset = 0.01f;
 
     [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
-    public float ballDribblingDistance = 1f;
+    public float ballDribblingDistance = 0.8f;
 
     [Tooltip("Right foot transform")]
     public Transform footTransform;
 
     public void Awake()
     {
-        ball = FindObjectOfType<Ball>();
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
 

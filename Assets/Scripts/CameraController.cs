@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum CameraType
 {
+    None,
     Moving,
     Shooting,
     Finish
@@ -11,20 +13,22 @@ public enum CameraType
 
 public class CameraController: MonoBehaviour
 {
+    private Dictionary<CameraType, CinemachineVirtualCamera> cameras;
+    
     [SerializeField] private CinemachineVirtualCamera movingCamera;
     [SerializeField] private CinemachineVirtualCamera shootingCamera;
     [SerializeField] private CinemachineVirtualCamera finishCamera;
 
-    private Dictionary<CameraType, CinemachineVirtualCamera> cameras;
-
     public void Awake()
     {
-        cameras = new Dictionary<CameraType, CinemachineVirtualCamera>()
+        cameras = new Dictionary<CameraType, CinemachineVirtualCamera>
         {
             { CameraType.Moving, movingCamera },
             { CameraType.Shooting, shootingCamera },
             { CameraType.Finish, finishCamera },
         };
+
+        SwitchCamera(CameraType.Moving);
     }
 
     public void SwitchCamera(CameraType cameraType)
@@ -35,6 +39,20 @@ public class CameraController: MonoBehaviour
         }
 
         cameras[cameraType].Priority = 1;
+    }
+    
+    public void SetupCameras(GameObject playerGameObject, Transform goalTransform)
+    {
+        var playerTransform = playerGameObject.transform;
+        
+        movingCamera.LookAt = playerTransform;
+        movingCamera.Follow = playerTransform;
+
+        shootingCamera.Follow = playerTransform;
+        shootingCamera.LookAt = goalTransform;
+
+        finishCamera.Follow = playerTransform;
+        finishCamera.LookAt = playerTransform;
     }
 }
 

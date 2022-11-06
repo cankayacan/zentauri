@@ -84,10 +84,13 @@ GameObject:
   - component: {fileID: 421895927447709029}
   - component: {fileID: 421895927447709031}
   - component: {fileID: 421895927447709024}
-  - component: {fileID: 421895927447709025}
   - component: {fileID: 421895927447709026}
   - component: {fileID: 421895927447709027}
   - component: {fileID: 4590401564702174820}
+  - component: {fileID: 1416591033774116421}
+  - component: {fileID: 4411915013083817672}
+  - component: {fileID: 6190230251366896732}
+  - component: {fileID: 4520316837035770167}
   m_Layer: 0
   m_Name: FallGuyRed
   m_TagString: Untagged
@@ -259,7 +262,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e91e798e0b44d9d8cbf7c2719ac864d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootToGoalAngle: 15
 --- !u!114 &421895927447709028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,21 +332,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcd3b5f8dd4ad42e58b7e618ddec5e58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &421895927447709025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 656269686449872035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90586e5ade8c477a9ec5ed2e4352c4a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movingCamera: {fileID: 0}
-  shootingCamera: {fileID: 0}
-  finishCamera: {fileID: 0}
 --- !u!114 &421895927447709026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -371,16 +358,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: {x: 0, y: 0, z: 0}
-  moveSpeed: 5
-  sprintSpeed: 10
-  rotationSpeed: 500
   grounded: 1
   groundedOffset: 0.01
+  ballDribblingDistance: 0.8
   footTransform: {fileID: 6028069435341732451}
-  goalTransform: {fileID: 0}
-  ballOwnDistance: 0.5
-  ballDribblingDistance: 1
-  shootingDistance: 20
 --- !u!114 &4590401564702174820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,6 +376,65 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkingParticles: {fileID: 1901201308882815246}
   shootingParticles: {fileID: 4904681150165203773}
+--- !u!114 &1416591033774116421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656269686449872035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc34444bec584b71810744d208036444, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shootSpeed: 30
+--- !u!114 &4411915013083817672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656269686449872035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58c7adb0ee2b40a48c20ca21f4c1ab3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxAngleBeforeWalking: 15
+  rotationSpeed: 200
+  sprintSpeed: 12
+  ballOwnDistance: 1
+  footTransform: {fileID: 6028069435341732451}
+--- !u!114 &6190230251366896732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656269686449872035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd1869e4e8c140bfa366af3f0fcc217b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 6
+  rotationSpeed: 200
+  maxAngleBeforeStopMotion: 5
+  goalTransform: {fileID: 0}
+  shootingDistance: 20
+--- !u!114 &4520316837035770167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656269686449872035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14394d98f28941dbae4951f365e7cbb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &678921031816416215
 GameObject:
   m_ObjectHideFlags: 0

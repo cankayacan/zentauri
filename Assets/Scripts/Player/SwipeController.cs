@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof (PlayerInput))]
 public class SwipeController : MonoBehaviour
 {
-    [SerializeField] private GameObject trailPrefab;
+    public GameObject trailPrefab;
 
     private InputController inputController;
 

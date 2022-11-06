@@ -1,7 +1,6 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof (CameraController))]
 [RequireComponent(typeof(PlayerStateController))]
 public class PlayerGameEnding: MonoBehaviour
 {
@@ -13,9 +12,10 @@ public class PlayerGameEnding: MonoBehaviour
     public void Awake()
     {
         ball = FindObjectOfType<Ball>();
-        animator = GetComponent<Animator>();
-        cameraController = GetComponent<CameraController>();
+        cameraController = FindObjectOfType<CameraController>();
         
+        animator = GetComponent<Animator>();
+
         playerStateController = GetComponent<PlayerStateController>();
         playerStateController.StateChanged += PlayerStateControllerOnStateChanged;
     }

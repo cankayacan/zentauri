@@ -1,7 +1,6 @@
 using UnityEngine;
 
 [RequireComponent(typeof (PlayerEffectController))]
-[RequireComponent(typeof (CameraController))]
 [RequireComponent(typeof (SwipeController))]
 [RequireComponent(typeof (PlayerAudio))]
 [RequireComponent(typeof (Animator))]
@@ -23,9 +22,9 @@ public class PlayerShoot: MonoBehaviour
     private void Awake()
     {
         ball = FindObjectOfType<Ball>();
+        cameraController = FindObjectOfType<CameraController>();
 
         playerEffectController = GetComponent<PlayerEffectController>();
-        cameraController = GetComponent<CameraController>();
         playerAudio = GetComponent<PlayerAudio>();
         animator = GetComponent<Animator>();
 

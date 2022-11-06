@@ -1,7 +1,8 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(PlayerCharacterController))]
 public class PlayerDribbling: MonoBehaviour
 {
     private Ball ball;
@@ -11,7 +12,7 @@ public class PlayerDribbling: MonoBehaviour
     private PlayerCharacterController playerCharacterController;
 
     [Tooltip("Move speed of the character in m/s")]
-    public float moveSpeed = 4;
+    public float moveSpeed = 6;
 
     [Tooltip("How fast the character turns to face movement direction")]
     [Range(0.0f, 1000f)]
@@ -29,7 +30,6 @@ public class PlayerDribbling: MonoBehaviour
     public void Awake()
     {
         ball = FindObjectOfType<Ball>();
-        playerStateController = GetComponent<PlayerStateController>();
         playerCharacterController = GetComponent<PlayerCharacterController>();
         
         playerStateController = GetComponent<PlayerStateController>();

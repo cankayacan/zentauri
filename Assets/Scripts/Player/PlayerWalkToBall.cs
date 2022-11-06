@@ -1,13 +1,16 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerEffectController))]
+[RequireComponent(typeof(PlayerCharacterController))]
 public class PlayerWalkToBall: MonoBehaviour
 {
-    private Ball ball;
     private float footHeight;
-    
+
+    private Ball ball;
     private CameraController cameraController;
+
     private PlayerStateController playerStateController;
     private PlayerEffectController playerEffectController;
     private PlayerCharacterController playerCharacterController;
@@ -21,7 +24,7 @@ public class PlayerWalkToBall: MonoBehaviour
     public float rotationSpeed = 200;
 
     [Tooltip("Sprint speed of the character in m/s")]
-    public float sprintSpeed = 10;
+    public float sprintSpeed = 12;
 
     [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
     public float ballOwnDistance = .5f;
@@ -32,8 +35,8 @@ public class PlayerWalkToBall: MonoBehaviour
     public void Awake()
     {
         ball = FindObjectOfType<Ball>();
-        cameraController = GetComponent<CameraController>();
-        playerStateController = GetComponent<PlayerStateController>();
+        cameraController = FindObjectOfType<CameraController>();
+
         playerEffectController = GetComponent<PlayerEffectController>();
         playerCharacterController = GetComponent<PlayerCharacterController>();
         
