@@ -22,7 +22,7 @@ const App = () => {
         gamePlay.RestartGame();
     };
     return ((0, preact_1.h)("div", { class: "w-max h-max items-end flex-row-reverse justify-between", style: backgroundStyle },
-        showRestart && ((0, preact_1.h)("div", { class: "self-end w-56 pb-5 pr-5" },
+        showRestart && ((0, preact_1.h)("div", { class: "self-end w-48 pb-5 pr-5" },
             (0, preact_1.h)(Button_1.Button, { style: {
                     borderRadius: [16, 16, 0, 16],
                 }, text: "Restart", onClick: restartGame, enabled: !loading }))),

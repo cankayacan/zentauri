@@ -33,7 +33,7 @@ const App = () => {
       style={backgroundStyle}
     >
       {showRestart && (
-        <div class="self-end w-56 pb-5 pr-5">
+        <div class="self-end w-48 pb-5 pr-5">
           <Button
             style={{
               borderRadius: [16, 16, 0, 16],
