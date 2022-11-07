@@ -88,3 +88,6 @@ ProjectSettings/Packages/com.unity.probuilder
 
 UIElementsSchema
 UnityDefaultRuntimeTheme.tss*
+
+/OneJS/Components/*.js
+/OneJS/Screens/*.js
