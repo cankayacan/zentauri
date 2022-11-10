@@ -1,16 +1,16 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStateController))]
 [RequireComponent(typeof(PlayerEffectController))]
 [RequireComponent(typeof(PlayerCharacterController))]
-public class PlayerWalkToBall: MonoBehaviour
+public class PlayerWalkToBall : MonoBehaviour
 {
-    private float footHeight;
-
     private Ball ball;
     private CameraController cameraController;
 
+    private BallDetector ballInRangeDetector;
     private PlayerStateController playerStateController;
     private PlayerEffectController playerEffectController;
     private PlayerCharacterController playerCharacterController;
@@ -26,29 +26,21 @@ public class PlayerWalkToBall: MonoBehaviour
     [Tooltip("Sprint speed of the character in m/s")]
     public float sprintSpeed = 12;
 
-    [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
-    public float ballOwnDistance = .5f;
-
-    [Tooltip("Right foot transform")]
-    public Transform footTransform;
-    
     public void Awake()
     {
         ball = FindObjectOfType<Ball>();
         cameraController = FindObjectOfType<CameraController>();
+        
+        ballInRangeDetector = GameObject.FindWithTag("BallInRangeDetector").GetComponent<BallDetector>();
+        ballInRangeDetector.BallTouched += OnBallInRange;
 
         playerEffectController = GetComponent<PlayerEffectController>();
         playerCharacterController = GetComponent<PlayerCharacterController>();
-        
+
         playerStateController = GetComponent<PlayerStateController>();
         playerStateController.StateChanged += PlayerStateControllerOnStateChanged;
     }
 
-    private void Start()
-    {
-        footHeight = footTransform.position.y;
-    }
-    
     public void OnDestroy()
     {
         playerStateController.StateChanged -= PlayerStateControllerOnStateChanged;
@@ -66,7 +58,7 @@ public class PlayerWalkToBall: MonoBehaviour
 
     private IEnumerator WalkToBall()
     {
-        while (playerStateController.playerState == PlayerState.WalkToBall) 
+        while (playerStateController.playerState == PlayerState.WalkToBall)
         {
             var rotationAngleLeft = RotateToBall();
             if (rotationAngleLeft <= maxAngleBeforeWalking)
@@ -74,29 +66,8 @@ public class PlayerWalkToBall: MonoBehaviour
                 playerCharacterController.Move(sprintSpeed);
             }
 
-            CheckBallInRange();
-
             yield return new WaitForEndOfFrame();
         }
-    }
-    
-    private void CheckBallInRange()
-    {
-        var layerMask = LayerMask.GetMask("Ball");
-
-        var position = transform.position;
-        var playerPosition = new Vector3(position.x, footHeight, position.z);
-
-        Debug.DrawRay(playerPosition, transform.forward, Color.red);
-
-        if (!Physics.Raycast(playerPosition, transform.forward, out RaycastHit hitInfo, ballOwnDistance, layerMask))
-        {
-            return;
-        }
-
-        if (playerStateController.playerState == PlayerState.Shooting) return;
-        
-        playerStateController.ChangeState(PlayerState.Dribbling);
     }
 
     private float RotateToBall()
@@ -105,5 +76,12 @@ public class PlayerWalkToBall: MonoBehaviour
         var targetRotation = Utils.GetTargetQuaternion(transform.position, targetPosition);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         return Utils.GetAngleToTurn(transform, targetPosition);
+    }
+
+    private void OnBallInRange(GameObject part, GameObject ballGameObject)
+    {
+        if (playerStateController.playerState == PlayerState.Shooting) return;
+        
+        playerStateController.ChangeState(PlayerState.Dribbling);
     }
 }

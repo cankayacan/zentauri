@@ -18,17 +18,10 @@ public class PlayerCharacterController : MonoBehaviour
     [Tooltip("Useful for rough ground")]
     public float groundedOffset = 0.01f;
 
-    [Tooltip("When the character has this distance to the ball, the ball can be owned.")]
-    public float ballDribblingDistance = 0.8f;
-
-    [Tooltip("Right foot transform")]
-    public Transform footTransform;
-
     public void Awake()
     {
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
-
         playerStateController = GetComponent<PlayerStateController>();
     }
 

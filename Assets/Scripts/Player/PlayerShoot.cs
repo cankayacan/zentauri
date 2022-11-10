@@ -12,7 +12,7 @@ public class PlayerShoot: MonoBehaviour
     private PlayerStateController playerStateController;
     private CameraController cameraController;
     private SwipeController swipeController;
-    private BallDetector ballDetector;
+    private BallDetector ballKickDetector;
     private PlayerAudio playerAudio;
     private Animator animator;
     private Ball ball;
@@ -33,14 +33,14 @@ public class PlayerShoot: MonoBehaviour
 
         swipeController = GetComponent<SwipeController>();
         swipeController.Swiped += SwipeControllerOnSwiped;
-
-        ballDetector = GetComponentInChildren<BallDetector>();
-        ballDetector.BallTouched += BallDetectorOnBallTouched;
+        
+        ballKickDetector = GameObject.FindWithTag("BallKickDetector").GetComponent<BallDetector>();
+        ballKickDetector.BallTouched += OnBallTouched;
     }
 
     private void OnDestroy()
     {
-        ballDetector.BallTouched -= BallDetectorOnBallTouched;
+        ballKickDetector.BallTouched -= OnBallTouched;
         swipeController.Swiped -= SwipeControllerOnSwiped;
     }
     
@@ -81,10 +81,8 @@ public class PlayerShoot: MonoBehaviour
         playerEffectController.EnableShootingParticles();
     }
 
-    private void BallDetectorOnBallTouched(GameObject part, GameObject ballGameObject)
+    private void OnBallTouched(GameObject part, GameObject ballGameObject)
     {
-        if (!part.CompareTag("BallKickDetector")) return;
-
         if (playerStateController.playerState != PlayerState.Shooting) return;
 
         playerAudio.PlayBallKickAudio();

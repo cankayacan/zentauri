@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof (BallAudio))]
 public class Ball : MonoBehaviour
@@ -12,6 +13,7 @@ public class Ball : MonoBehaviour
     private bool collidedAfterShooting;
     private bool showingParticles;
 
+    public float dribblingDistance = 0.8f;
     public float angularVelocityMultiplier = 1.5f;
     public PlayerCharacterController owner;
     public Vector3 speed => ballRigidbody.velocity;
@@ -67,15 +69,16 @@ public class Ball : MonoBehaviour
 
     private void Dribble()
     {
-        SetPosition(owner.ballDribblingDistance);
+        SetPosition();
     }
 
-    private void SetPosition(float forwardMultiplier)
+    private void SetPosition()
     {
-        var ownerForward = owner.transform.forward;
-        var footPosition = owner.footTransform.position;
+        var ownerTransform = owner.transform;
+        var ownerForward = ownerTransform.forward;
+        var footPosition = ownerTransform.position;
 
-        var ballPosition = footPosition + (ownerForward * forwardMultiplier);
+        var ballPosition = footPosition + (ownerForward * dribblingDistance);
         ballPosition = new Vector3(ballPosition.x, ballGroundedHeight, ballPosition.z);
         transform.position = ballPosition;
     }
