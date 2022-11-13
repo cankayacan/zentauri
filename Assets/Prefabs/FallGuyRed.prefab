@@ -360,7 +360,6 @@ MonoBehaviour:
   speed: {x: 0, y: 0, z: 0}
   grounded: 1
   groundedOffset: 0.01
-  ballDribblingDistance: 0.8
 --- !u!114 &4590401564702174820
 MonoBehaviour:
   m_ObjectHideFlags: 0
