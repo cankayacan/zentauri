@@ -22,8 +22,9 @@ public class PlayerStateController: MonoBehaviour
     {
         if (playerState == state) return;
 
-        Debug.Log($"Chaging state to {state}");
+        if (playerState == PlayerState.Goal || playerState == PlayerState.Out) return;
 
+        Debug.Log($"Chaging state to {state}");
         playerState = state;
         StateChanged?.Invoke(state);
     }
