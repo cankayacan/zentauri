@@ -91,5 +91,6 @@ UnityDefaultRuntimeTheme.tss*
 
 /OneJS/Components/**/*.js
 /OneJS/Screens/**/*.js
+/OneJS/**/*.bytes
 
 .DS_Store

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof (BallAudio))]
 public class Ball : MonoBehaviour
@@ -13,7 +12,8 @@ public class Ball : MonoBehaviour
     private bool collidedAfterShooting;
     private bool showingParticles;
 
-    public float dribblingDistance = 0.8f;
+    public float showParticlesSpeed = 8;
+    public float dribblingDistance = 0.75f;
     public float angularVelocityMultiplier = 1.5f;
     public PlayerCharacterController owner;
     public Vector3 speed => ballRigidbody.velocity;
@@ -149,7 +149,7 @@ public class Ball : MonoBehaviour
     {
         var speedMagnitude = speed.magnitude;
 
-        var showParticles = speedMagnitude > 8;
+        var showParticles = speedMagnitude > showParticlesSpeed;
 
         if (collidedAfterShooting) showParticles = false;
 
