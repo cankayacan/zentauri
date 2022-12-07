@@ -30,11 +30,11 @@ const App = () => {
   };
 
   return (
-    <div class="flex-row justify-between" style={backgroundStyle}>
-      <div class="relative w-56">
+    <div class="relative flex-row justify-between" style={backgroundStyle}>
+      <div class="absolute w-48 bottom-5 left-5">
         {loading && (
-          <div class="absolute flex-row items-center bottom-5 left-5">
-            <div style={{ width: 25, marginRight: 5 }}>
+          <div class="flex-row items-center">
+            <div style={{ width: 25, marginRight: "4px" }}>
               <Spinner radius={25} thickness={2.5} />
             </div>
             <div style={{ color: "#FFFFFF", fontSize: "8px" }}>Loading...</div>
@@ -44,14 +44,15 @@ const App = () => {
 
       <image
         image={playerRenderTexture}
+        class="absolute"
         style={{
-          width: "50%",
+          width: "100%",
           height: "100%",
           unityBackgroundScaleMode: "ScaleAndCrop",
         }}
       />
 
-      <div class="self-end w-56 pb-5 pr-5">
+      <div class="absolute w-48 bottom-5 right-5">
         <Button
           style={{
             borderRadius: [16, 16, 0, 16],

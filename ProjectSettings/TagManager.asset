@@ -11,6 +11,7 @@ TagManager:
   - GoalPost
   - Water
   - Ground
+  - BallInRangeDetector
   layers:
   - Default
   - TransparentFX

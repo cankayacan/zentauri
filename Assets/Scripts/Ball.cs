@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof (BallAudio))]
 public class Ball : MonoBehaviour
@@ -13,6 +12,8 @@ public class Ball : MonoBehaviour
     private bool collidedAfterShooting;
     private bool showingParticles;
 
+    public float showParticlesSpeed = 8;
+    public float dribblingDistance = 0.75f;
     public float angularVelocityMultiplier = 1.5f;
     public PlayerCharacterController owner;
     public Vector3 speed => ballRigidbody.velocity;
@@ -38,9 +39,7 @@ public class Ball : MonoBehaviour
     public void Shoot(Vector3 velocity)
     {
         ballRigidbody.velocity = velocity;
-        Debug.Log($"setting collidedAfterShooting to false");
         collidedAfterShooting = false;
-        Debug.Log($"setting collidedAfterShooting to false finished");
     }
 
     public void Control(PlayerCharacterController characterController)
@@ -70,15 +69,16 @@ public class Ball : MonoBehaviour
 
     private void Dribble()
     {
-        SetPosition(owner.ballDribblingDistance);
+        SetPosition();
     }
 
-    private void SetPosition(float forwardMultiplier)
+    private void SetPosition()
     {
-        var ownerForward = owner.transform.forward;
-        var footPosition = owner.footTransform.position;
+        var ownerTransform = owner.transform;
+        var ownerForward = ownerTransform.forward;
+        var footPosition = ownerTransform.position;
 
-        var ballPosition = footPosition + (ownerForward * forwardMultiplier);
+        var ballPosition = footPosition + (ownerForward * dribblingDistance);
         ballPosition = new Vector3(ballPosition.x, ballGroundedHeight, ballPosition.z);
         transform.position = ballPosition;
     }
@@ -149,7 +149,7 @@ public class Ball : MonoBehaviour
     {
         var speedMagnitude = speed.magnitude;
 
-        var showParticles = speedMagnitude > 8;
+        var showParticles = speedMagnitude > showParticlesSpeed;
 
         if (collidedAfterShooting) showParticles = false;
 
