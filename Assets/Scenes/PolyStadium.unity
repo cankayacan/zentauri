@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.03628691, g: 0.3111242, b: 0.5694076, a: 1}
+  m_IndirectSpecularColor: {r: 0.03608097, g: 0.30968353, b: 0.567663, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6285,7 +6285,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563048232}
-  m_LocalRotation: {x: 0.01081177, y: -0.7128001, z: 0.010990666, w: 0.7011978}
+  m_LocalRotation: {x: 0.01081177, y: -0.7128001, z: 0.010990665, w: 0.7011978}
   m_LocalPosition: {x: -31.73, y: 2.6610036, z: 7.6800013}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6323,7 +6323,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9723047, y: 1}
+    m_SensorSize: {x: 1.909991, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -7239,7 +7239,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9723047, y: 1}
+    m_SensorSize: {x: 1.909991, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -19099,7 +19099,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.9723047, y: 1}
+    m_SensorSize: {x: 1.909991, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -19115,7 +19115,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346428915}
-  m_LocalRotation: {x: 0.17722425, y: 0.4629459, z: -0.095039755, w: 0.8632729}
+  m_LocalRotation: {x: 0.17722425, y: 0.4629459, z: -0.09503975, w: 0.8632729}
   m_LocalPosition: {x: -38.42, y: 2.3810036, z: 5.819998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -20617,7 +20617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 629326428}
   trail: {fileID: 451875484}
-  player: {fileID: 4920267076926813282, guid: ea84229223b9348d485ed848c7cf1258, type: 3}
+  player: {fileID: 7345634737031458466, guid: 6771e1ced2ee1472aa146ed2db0a5fde, type: 3}
   goalTransformHost: {fileID: 472642875}
   goalTransformGuest: {fileID: 1088379311}
 --- !u!4 &1509684112

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,12 +12,15 @@ public class Ball : MonoBehaviour
     private List<ParticleSystem> particles;
     private bool collidedAfterShooting;
     private bool showingParticles;
+    private Vector3 speed => ballRigidbody.velocity;
+    private PlayerCharacterController owner;
 
     public float showParticlesSpeed = 8;
     public float dribblingDistance = 0.75f;
     public float angularVelocityMultiplier = 1.5f;
-    public PlayerCharacterController owner;
-    public Vector3 speed => ballRigidbody.velocity;
+    public float maxCurveForceVelocity = 30f;
+
+    private float curveForce;
 
     public void Awake()
     {
@@ -36,9 +40,24 @@ public class Ball : MonoBehaviour
         UpdateAngularVelocity();
     }
 
-    public void Shoot(Vector3 velocity)
+    private void FixedUpdate()
     {
-        ballRigidbody.velocity = velocity;
+        ApplyHorizontalForce();
+    }
+
+    public void Shoot(Vector3 target, Vector3 velocity, float curveAngle)
+    {
+        var horizontalVelocityToApply = ScaleAngleToCurveVelocity(curveAngle);
+        Debug.Log($"curveAngle {curveAngle} horizontalVelocityToApply {horizontalVelocityToApply}");
+        var distanceX = target.x - transform.position.x;
+        var estimatedShootingTime = distanceX / velocity.x;
+
+        // V * t = 1/2 * g * t^2 -> g = V * t / 2
+        curveForce = 2 * horizontalVelocityToApply / estimatedShootingTime;
+        Debug.Log($"Distance {distanceX} Time {estimatedShootingTime} Curve {curveForce}");
+
+        var initialVelocityZ = velocity.z + horizontalVelocityToApply;
+        ballRigidbody.velocity = new Vector3(velocity.x, velocity.y, initialVelocityZ);
         collidedAfterShooting = false;
     }
 
@@ -165,5 +184,20 @@ public class Ball : MonoBehaviour
         {
             particles.ForEach(p => p.Stop());
         }
+    }
+
+    private float ScaleAngleToCurveVelocity(float angle)
+    {
+        const float minAngle = -90f;
+        const float maxAngle = 90f;
+        var angleConstrained = (angle < minAngle) ? minAngle : (angle > maxAngle) ? maxAngle : angle;
+        return angleConstrained / maxAngle * maxCurveForceVelocity;
+    }
+
+    private void ApplyHorizontalForce()
+    {
+        if (collidedAfterShooting) return;
+
+        ballRigidbody.AddForce(-1 * new Vector3(0, 0, curveForce * Time.deltaTime), ForceMode.VelocityChange);
     }
 }
