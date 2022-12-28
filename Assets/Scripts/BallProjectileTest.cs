@@ -20,7 +20,7 @@ public class BallProjectileTest : MonoBehaviour
             var directionX = rnd.Next(2) == 0 ? 1 : -1;
             var directionZ = rnd.Next(2) == 0 ? 1 : -1;
 
-            ball.Shoot(Vector3.zero, new Vector3(directionX * Random.Range(15, 25), 0, directionZ * Random.Range(15, 25) ), 0f);
+            ball.Shoot(Vector3.zero, new Vector3(directionX * Random.Range(15, 25), 0, directionZ * Random.Range(15, 25) ), 90f);
         }
     }
 }

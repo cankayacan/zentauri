@@ -20,7 +20,7 @@ public class SwipeController : MonoBehaviour
 
     private List<Vector2> path;
 
-    public event Action<Vector3, float> Swiped;
+    public event Action<Vector2, float> Swiped;
 
     void Awake()
     {
@@ -96,10 +96,6 @@ public class SwipeController : MonoBehaviour
         var curveAngle = Vector2.SignedAngle(curveDirection, shootDirection);
         Debug.Log($"Curve direction {curveDirection} angle {curveAngle}");
 
-        var target = Utils.GetWorldPosition(Camera.main, endPosition);
-
-        if (!target.HasValue) return;
-
-        Swiped?.Invoke(target.Value, curveAngle);
+        Swiped?.Invoke(endPosition, curveAngle);
     }
 }

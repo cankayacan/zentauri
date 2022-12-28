@@ -67,13 +67,16 @@ public class PlayerShoot: MonoBehaviour
         Debug.Log("animator disabled");
     }
 
-    private void SwipeControllerOnSwiped(Vector3 target, float angle)
+    private void SwipeControllerOnSwiped(Vector2 target, float curveAngle)
     {
         if (GameController.Default.finished) return;
+        
+        shootTarget = Utils.GetWorldPosition(Camera.main, target);
+        this.curveAngle = curveAngle;
+
+        if (!shootTarget.HasValue) return;
 
         HandleSwipe();
-        shootTarget = target;
-        curveAngle = angle;
     }
 
     private void HandleSwipe()

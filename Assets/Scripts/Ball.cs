@@ -20,7 +20,7 @@ public class Ball : MonoBehaviour
     public float angularVelocityMultiplier = 1.5f;
     public float maxCurveForceVelocity = 30f;
 
-    private float curveForce;
+    private Vector3 curveForce;
 
     public void Awake()
     {
@@ -42,22 +42,13 @@ public class Ball : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ApplyHorizontalForce();
+        ApplyCurveForce();
     }
 
     public void Shoot(Vector3 target, Vector3 velocity, float curveAngle)
     {
-        var horizontalVelocityToApply = ScaleAngleToCurveVelocity(curveAngle);
-        Debug.Log($"curveAngle {curveAngle} horizontalVelocityToApply {horizontalVelocityToApply}");
-        var distanceX = target.x - transform.position.x;
-        var estimatedShootingTime = distanceX / velocity.x;
-
-        // V * t = 1/2 * g * t^2 -> g = V * t / 2
-        curveForce = 2 * horizontalVelocityToApply / estimatedShootingTime;
-        Debug.Log($"Distance {distanceX} Time {estimatedShootingTime} Curve {curveForce}");
-
-        var initialVelocityZ = velocity.z + horizontalVelocityToApply;
-        ballRigidbody.velocity = new Vector3(velocity.x, velocity.y, initialVelocityZ);
+        var initialCurveForceToAdd = CalculateCurveForce(target, velocity, curveAngle);
+        ballRigidbody.velocity = velocity + initialCurveForceToAdd;
         collidedAfterShooting = false;
     }
 
@@ -186,18 +177,37 @@ public class Ball : MonoBehaviour
         }
     }
 
+    private void ApplyCurveForce()
+    {
+        if (collidedAfterShooting) return;
+
+        ballRigidbody.AddForce(-1 * curveForce * Time.deltaTime, ForceMode.VelocityChange);
+    }
+
+    private Vector3 CalculateCurveForce(Vector3 target, Vector3 velocity, float curveAngle)
+    {
+        Debug.Log($"target {target}");
+        var shootVector = target - transform.position;
+        var shootDirection = new Vector2(shootVector.x, shootVector.z).normalized;
+        var perpShootDirection = new Vector3(shootDirection.y, 0, -shootDirection.x);
+        var curveOffset = ScaleAngleToCurveVelocity(curveAngle);                    
+        
+        // curve force is perpendicular to the shoot direction
+        var initialCurveForceToAdd = curveOffset * perpShootDirection;
+
+        var estimatedShootingTime = shootVector.magnitude / velocity.magnitude;
+
+        // V * t = 1/2 * g * t^2 -> g = 2 * V / t
+        curveForce = 2 * initialCurveForceToAdd / estimatedShootingTime;
+
+        return initialCurveForceToAdd;
+    }
+    
     private float ScaleAngleToCurveVelocity(float angle)
     {
         const float minAngle = -90f;
         const float maxAngle = 90f;
         var angleConstrained = (angle < minAngle) ? minAngle : (angle > maxAngle) ? maxAngle : angle;
         return angleConstrained / maxAngle * maxCurveForceVelocity;
-    }
-
-    private void ApplyHorizontalForce()
-    {
-        if (collidedAfterShooting) return;
-
-        ballRigidbody.AddForce(-1 * new Vector3(0, 0, curveForce * Time.deltaTime), ForceMode.VelocityChange);
     }
 }

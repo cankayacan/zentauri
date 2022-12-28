@@ -34,3 +34,21 @@ public static class Utils
         return Math.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y);
     }
 }
+
+public static class VectorExtensions
+{
+    public static Vector3 xz(this Vector3 vector)
+    {
+        var (x, _, z) = vector;
+        return new Vector3(x, 0, z);
+    }
+
+    public static void Deconstruct(this Vector3 vector, out float x, out float y, out float z) =>
+        (x, y, z) = (vector.x, vector.y, vector.z);
+}
+
+public static class TransformExtensions
+{
+    public static void Deconstruct(this Transform transform, out Vector3 position, out Quaternion rotation) =>
+        (position, rotation) = (transform.position, transform.rotation);
+}
