@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof (BallAudio))]
 public class Ball : MonoBehaviour
 {
-    private BallAudio ballAudio;
     private Rigidbody ballRigidbody;
     private float ballGroundedHeight;
     private List<ParticleSystem> particles;
@@ -14,17 +12,15 @@ public class Ball : MonoBehaviour
     private bool showingParticles;
     private Vector3 speed => ballRigidbody.velocity;
     private PlayerCharacterController owner;
+    private Vector3 curveForce;
 
     public float showParticlesSpeed = 8;
     public float dribblingDistance = 0.75f;
     public float angularVelocityMultiplier = 1.5f;
     public float maxCurveForceVelocity = 30f;
 
-    private Vector3 curveForce;
-
     public void Awake()
     {
-        ballAudio = GetComponent<BallAudio>();
         ballRigidbody = GetComponent<Rigidbody>();
         ballGroundedHeight = transform.position.y;
         particles = GetComponentsInChildren<ParticleSystem>().ToList();
@@ -99,48 +95,15 @@ public class Ball : MonoBehaviour
         ballRigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("GoalDetector"))
-        {
-            HandleGoal();
-        }
-
-        if (other.CompareTag("Out"))
-        {
-            HandleOut();
-        }
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         var other = collision.gameObject;
-        if (other.CompareTag("GoalPost"))
-        {
-            ballAudio.PlayGoalPostAudioClip();
-        }
-
         var collidedWithGroundOrPlayer = other.CompareTag("Ground") || other.CompareTag("Player");
+
         if (!collidedWithGroundOrPlayer)
         {
             collidedAfterShooting = true;
         }
-    }
-
-    private void HandleGoal()
-    {
-        if (GameController.Default.finished) return;
-
-        ballAudio.PlayGoalAudioClip();
-        GameController.Default.PublishGoal();
-    }
-
-    private void HandleOut()
-    {
-        if (GameController.Default.finished) return;
-
-        ballAudio.PlayOutAudioClip();
-        GameController.Default.PublishOut();
     }
 
     private void IgnoreCollisions(bool ignore)
@@ -186,16 +149,16 @@ public class Ball : MonoBehaviour
 
     private Vector3 CalculateCurveForce(Vector3 target, Vector3 velocity, float curveAngle)
     {
-        Debug.Log($"target {target}");
         var shootVector = target - transform.position;
         var shootDirection = new Vector2(shootVector.x, shootVector.z).normalized;
-        var perpShootDirection = new Vector3(shootDirection.y, 0, -shootDirection.x);
-        var curveOffset = ScaleAngleToCurveVelocity(curveAngle);                    
-        
-        // curve force is perpendicular to the shoot direction
-        var initialCurveForceToAdd = curveOffset * perpShootDirection;
 
         var estimatedShootingTime = shootVector.magnitude / velocity.magnitude;
+        
+        var perpShootDirection = new Vector3(shootDirection.y, 0, -shootDirection.x);
+        var curveOffset = ScaleAngleToCurveVelocity(curveAngle);
+
+        // curve force is perpendicular to the shoot direction
+        var initialCurveForceToAdd = curveOffset * perpShootDirection;
 
         // V * t = 1/2 * g * t^2 -> g = 2 * V / t
         curveForce = 2 * initialCurveForceToAdd / estimatedShootingTime;
