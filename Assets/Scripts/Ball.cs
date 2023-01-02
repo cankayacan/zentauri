@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,6 +12,7 @@ public class Ball : MonoBehaviour
     private Vector3 speed => ballRigidbody.velocity;
     private PlayerCharacterController owner;
     private Vector3 curveForce;
+    private float curveAngle;
 
     public float showParticlesSpeed = 8;
     public float dribblingDistance = 0.75f;
@@ -29,11 +29,12 @@ public class Ball : MonoBehaviour
     public void Update()
     {
         UpdateParticles();
-
-        if (owner == null) return;
-
-        Dribble();
         UpdateAngularVelocity();
+
+        if (owner != null)
+        {
+            Dribble();   
+        }
     }
 
     private void FixedUpdate()
@@ -43,6 +44,7 @@ public class Ball : MonoBehaviour
 
     public void Shoot(Vector3 target, Vector3 velocity, float curveAngle)
     {
+        this.curveAngle = curveAngle;
         var initialCurveForceToAdd = CalculateCurveForce(target, velocity, curveAngle);
         ballRigidbody.velocity = velocity + initialCurveForceToAdd;
         collidedAfterShooting = false;
@@ -115,7 +117,15 @@ public class Ball : MonoBehaviour
 
     private void UpdateAngularVelocity()
     {
-        ballRigidbody.angularVelocity = owner.transform.right * (owner.speed.magnitude * angularVelocityMultiplier);
+        if (owner != null)
+        {
+            ballRigidbody.angularVelocity = owner.transform.right * (owner.speed.magnitude * angularVelocityMultiplier);            
+        }
+
+        if (!collidedAfterShooting)
+        {
+            ballRigidbody.angularVelocity = Vector3.up * curveAngle;
+        }
     }
 
     private void UpdateParticles()
@@ -129,7 +139,7 @@ public class Ball : MonoBehaviour
         if (showingParticles == showParticles) return;
 
         showingParticles = showParticles;
-
+        
         if (showParticles)
         {
             particles.ForEach(p => p.Play());
