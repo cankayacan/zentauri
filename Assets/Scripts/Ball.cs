@@ -2,25 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof (BallAudio))]
 public class Ball : MonoBehaviour
 {
-    private BallAudio ballAudio;
     private Rigidbody ballRigidbody;
     private float ballGroundedHeight;
     private List<ParticleSystem> particles;
     private bool collidedAfterShooting;
     private bool showingParticles;
+    private Vector3 speed => ballRigidbody.velocity;
+    private PlayerCharacterController owner;
+    private Vector3 curveForce;
+    private float curveAngle;
 
     public float showParticlesSpeed = 8;
     public float dribblingDistance = 0.75f;
     public float angularVelocityMultiplier = 1.5f;
-    public PlayerCharacterController owner;
-    public Vector3 speed => ballRigidbody.velocity;
+    public float maxCurveForceVelocity = 30f;
 
     public void Awake()
     {
-        ballAudio = GetComponent<BallAudio>();
         ballRigidbody = GetComponent<Rigidbody>();
         ballGroundedHeight = transform.position.y;
         particles = GetComponentsInChildren<ParticleSystem>().ToList();
@@ -29,16 +29,24 @@ public class Ball : MonoBehaviour
     public void Update()
     {
         UpdateParticles();
-
-        if (owner == null) return;
-
-        Dribble();
         UpdateAngularVelocity();
+
+        if (owner != null)
+        {
+            Dribble();   
+        }
     }
 
-    public void Shoot(Vector3 velocity)
+    private void FixedUpdate()
     {
-        ballRigidbody.velocity = velocity;
+        ApplyCurveForce();
+    }
+
+    public void Shoot(Vector3 target, Vector3 velocity, float curveAngle)
+    {
+        this.curveAngle = curveAngle;
+        var initialCurveForceToAdd = CalculateCurveForce(target, velocity, curveAngle);
+        ballRigidbody.velocity = velocity + initialCurveForceToAdd;
         collidedAfterShooting = false;
     }
 
@@ -89,48 +97,15 @@ public class Ball : MonoBehaviour
         ballRigidbody.angularVelocity = Vector3.zero;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("GoalDetector"))
-        {
-            HandleGoal();
-        }
-
-        if (other.CompareTag("Out"))
-        {
-            HandleOut();
-        }
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         var other = collision.gameObject;
-        if (other.CompareTag("GoalPost"))
-        {
-            ballAudio.PlayGoalPostAudioClip();
-        }
-
         var collidedWithGroundOrPlayer = other.CompareTag("Ground") || other.CompareTag("Player");
+
         if (!collidedWithGroundOrPlayer)
         {
             collidedAfterShooting = true;
         }
-    }
-
-    private void HandleGoal()
-    {
-        if (GameController.Default.finished) return;
-
-        ballAudio.PlayGoalAudioClip();
-        GameController.Default.PublishGoal();
-    }
-
-    private void HandleOut()
-    {
-        if (GameController.Default.finished) return;
-
-        ballAudio.PlayOutAudioClip();
-        GameController.Default.PublishOut();
     }
 
     private void IgnoreCollisions(bool ignore)
@@ -142,7 +117,15 @@ public class Ball : MonoBehaviour
 
     private void UpdateAngularVelocity()
     {
-        ballRigidbody.angularVelocity = owner.transform.right * (owner.speed.magnitude * angularVelocityMultiplier);
+        if (owner != null)
+        {
+            ballRigidbody.angularVelocity = owner.transform.right * (owner.speed.magnitude * angularVelocityMultiplier);            
+        }
+
+        if (!collidedAfterShooting)
+        {
+            ballRigidbody.angularVelocity = Vector3.up * curveAngle;
+        }
     }
 
     private void UpdateParticles()
@@ -156,7 +139,7 @@ public class Ball : MonoBehaviour
         if (showingParticles == showParticles) return;
 
         showingParticles = showParticles;
-
+        
         if (showParticles)
         {
             particles.ForEach(p => p.Play());
@@ -165,5 +148,39 @@ public class Ball : MonoBehaviour
         {
             particles.ForEach(p => p.Stop());
         }
+    }
+
+    private void ApplyCurveForce()
+    {
+        if (collidedAfterShooting) return;
+
+        ballRigidbody.AddForce(-1 * curveForce * Time.deltaTime, ForceMode.VelocityChange);
+    }
+
+    private Vector3 CalculateCurveForce(Vector3 target, Vector3 velocity, float curveAngle)
+    {
+        var shootVector = target - transform.position;
+        var shootDirection = new Vector2(shootVector.x, shootVector.z).normalized;
+
+        var estimatedShootingTime = shootVector.magnitude / velocity.magnitude;
+        
+        var perpShootDirection = new Vector3(shootDirection.y, 0, -shootDirection.x);
+        var curveOffset = ScaleAngleToCurveVelocity(curveAngle);
+
+        // curve force is perpendicular to the shoot direction
+        var initialCurveForceToAdd = curveOffset * perpShootDirection;
+
+        // V * t = 1/2 * g * t^2 -> g = 2 * V / t
+        curveForce = 2 * initialCurveForceToAdd / estimatedShootingTime;
+
+        return initialCurveForceToAdd;
+    }
+    
+    private float ScaleAngleToCurveVelocity(float angle)
+    {
+        const float minAngle = -90f;
+        const float maxAngle = 90f;
+        var angleConstrained = (angle < minAngle) ? minAngle : (angle > maxAngle) ? maxAngle : angle;
+        return angleConstrained / maxAngle * maxCurveForceVelocity;
     }
 }

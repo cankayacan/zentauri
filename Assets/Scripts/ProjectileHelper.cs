@@ -8,7 +8,6 @@ public class ProjectileHelper : MonoBehaviour
     private static void LaunchAngle(float speed, float distance, float yOffset, float gravity, out float angle0,
         out float angle1)
     {
-        Debug.Log($"Speed{speed} distance{distance} yOffset{yOffset}");
         angle0 = angle1 = 0;
 
         var speedSquared = speed * speed;

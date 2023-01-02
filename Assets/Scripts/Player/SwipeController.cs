@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,7 +20,7 @@ public class SwipeController : MonoBehaviour
 
     private List<Vector2> path;
 
-    public event Action<Vector3> Swiped;
+    public event Action<Vector2, float> Swiped;
 
     void Awake()
     {
@@ -87,16 +88,14 @@ public class SwipeController : MonoBehaviour
 
         if (checkPoints.Count < 2) return;
 
-        // var furthestPoint = checkPoints
-        //     .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
-        //
-        // var curveDirection = (furthestPoint - startPosition).normalized;
-        // Debug.Log($"Curve direction {curveDirection}");
+        var furthestPoint = checkPoints
+            .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
 
-        var target = Utils.GetWorldPosition(Camera.main, endPosition);
+        var curveDirection = (furthestPoint - startPosition).normalized;
+        var shootDirection = (endPosition - startPosition).normalized;
+        var curveAngle = Vector2.SignedAngle(curveDirection, shootDirection);
+        Debug.Log($"Curve direction {curveDirection} angle {curveAngle}");
 
-        if (!target.HasValue) return;
-
-        Swiped?.Invoke(target.Value);
+        Swiped?.Invoke(endPosition, curveAngle);
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerShoot: MonoBehaviour
 {
     private Vector3? shootTarget;
+    private float curveAngle;
 
     private PlayerEffectController playerEffectController;
     private PlayerStateController playerStateController;
@@ -33,7 +34,7 @@ public class PlayerShoot: MonoBehaviour
 
         swipeController = GetComponent<SwipeController>();
         swipeController.Swiped += SwipeControllerOnSwiped;
-        
+
         ballKickDetector = GameObject.FindWithTag("BallKickDetector").GetComponent<BallDetector>();
         ballKickDetector.BallTouched += OnBallTouched;
     }
@@ -43,7 +44,7 @@ public class PlayerShoot: MonoBehaviour
         ballKickDetector.BallTouched -= OnBallTouched;
         swipeController.Swiped -= SwipeControllerOnSwiped;
     }
-    
+
     private void PlayerStateControllerOnStateChanged(PlayerState state)
     {
         if (state == PlayerState.Shooting)
@@ -59,19 +60,23 @@ public class PlayerShoot: MonoBehaviour
         ball.SetVelocityToZero();
         playerEffectController.DisableWalkParticles();
     }
-    
+
     private void WaitSwipe()
     {
         animator.enabled = false;
         Debug.Log("animator disabled");
     }
-    
-    private void SwipeControllerOnSwiped(Vector3 target)
+
+    private void SwipeControllerOnSwiped(Vector2 target, float curveAngle)
     {
         if (GameController.Default.finished) return;
+        
+        shootTarget = Utils.GetWorldPosition(Camera.main, target);
+        this.curveAngle = curveAngle;
+
+        if (!shootTarget.HasValue) return;
 
         HandleSwipe();
-        shootTarget = target;
     }
 
     private void HandleSwipe()
@@ -89,16 +94,16 @@ public class PlayerShoot: MonoBehaviour
         playerStateController.ChangeState(PlayerState.WaitingShootResult);
         ShootBall(ballGameObject);
     }
-    
+
     private void ShootBall(GameObject ballGameObject)
     {
         if (!shootTarget.HasValue) return;
 
         var ballPosition = ballGameObject.transform.position;
-        var velocity = ProjectileHelper.CalculateVelocity(shootSpeed, ballPosition, shootTarget!.Value);
+        var velocity = ProjectileHelper.CalculateVelocity(shootSpeed, ballPosition, shootTarget.Value);
 
         var ball = ballGameObject.GetComponent<Ball>();
-        ball.Shoot(velocity);
+        ball.Shoot(shootTarget.Value, velocity, curveAngle);
 
         Invoke("AfterShootBall", 2f);
 
@@ -106,7 +111,7 @@ public class PlayerShoot: MonoBehaviour
 
         shootTarget = null;
     }
-    
+
     private void AfterShootBall()
     {
         if (GameController.Default.finished) return;
