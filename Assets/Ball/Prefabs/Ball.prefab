@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 8704717237434359512}
   - component: {fileID: 4466586698330511464}
   - component: {fileID: 7625948996957646125}
-  - component: {fileID: 2168298366176749921}
   m_Layer: 8
   m_Name: Ball
   m_TagString: Ball
@@ -133,9 +132,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48454336e39e4a4ea09e600542a24834, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showParticlesSpeed: 8
+  dribblingDistance: 0.75
   angularVelocityMultiplier: 1.5
-  owner: {fileID: 0}
-  projectile: {fileID: 0}
+  maxCurveForceVelocity: 30
 --- !u!82 &7625948996957646125
 AudioSource:
   m_ObjectHideFlags: 0
@@ -232,21 +232,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &2168298366176749921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8730849797983272262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0b0915711624211b7d19af287b6985c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  goalPostAudioClip: {fileID: 0}
-  goalAudioClip: {fileID: 0}
-  outAudioClip: {fileID: 0}
 --- !u!1001 &1351016272999324592
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -313,6 +298,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GlowBeam
+      objectReference: {fileID: 0}
+    - target: {fileID: 398696736520683900, guid: c973a6c6e7ade427e937cadc17905657,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 518324171150865652, guid: c973a6c6e7ade427e937cadc17905657,
         type: 3}
@@ -503,6 +493,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MainBeam
+      objectReference: {fileID: 0}
+    - target: {fileID: 2408304934545780240, guid: 9d3accc2b721945a0aba6ddfaabaf1b8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2412386019957123752, guid: 9d3accc2b721945a0aba6ddfaabaf1b8,
         type: 3}

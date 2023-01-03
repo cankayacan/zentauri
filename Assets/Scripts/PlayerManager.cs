@@ -7,7 +7,8 @@ public class PlayerManager: MonoBehaviour
     private int frameCountToWait = 5;
     private CameraController cameraController;
 
-    public Transform spawnPoint;
+    private Vector3 spawnPosition;
+    private Quaternion spawnRotation;
     public GameObject trail;
     public GameObject player;
     public Transform goalTransformHost;
@@ -18,8 +19,10 @@ public class PlayerManager: MonoBehaviour
         cameraController = FindObjectOfType<CameraController>();
     }
 
-    private void Start()
+    public void StartPlayer(Vector3 spawnPosition, Quaternion spawnRotation)
     {
+        this.spawnPosition = spawnPosition;
+        this.spawnRotation = spawnRotation;
         StartCoroutine(nameof(SpawnAfterFewFrames));
     }
 
@@ -41,7 +44,7 @@ public class PlayerManager: MonoBehaviour
     {
         var goalTransform = goalTransformHost;
 
-        var playerGameObject = Instantiate(player, spawnPoint.position, spawnPoint.rotation);
+        var playerGameObject = Instantiate(player, spawnPosition, spawnRotation);
         var swipeController = playerGameObject.GetComponent<SwipeController>();
         swipeController.trailPrefab = trail;
 
