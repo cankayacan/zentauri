@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/UI/GameScreen/GameScreen.uss?fileID=7433441132597879392&amp;guid=17c03e04c3b44f658439bf97e2f28cfc&amp;type=3#GameScreen" />
+    <ui:VisualElement name="footer" class="footer">
+        <ui:VisualElement name="left-container" class="left-container">
+            <ui:VisualElement name="error-container" class="error-container">
+                <ui:VisualElement class="error-image" />
+                <ui:Label name="error-label" class="error-label" />
+            </ui:VisualElement>
+        </ui:VisualElement>    
+        <ui:VisualElement name="right-container" class="right-container">
+            <ui:Button name="next-button" text="Next" class="button" />
+            <ui:Button name="restart-button" text="Restart" class="button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

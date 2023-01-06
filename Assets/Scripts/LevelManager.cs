@@ -17,6 +17,8 @@ public class LevelGameObject
 
 public class LevelManager: MonoBehaviour
 {
+    private int currentLevel;
+
     public PlayerManager playerManager;
     
     public GameObject ball;
@@ -27,7 +29,7 @@ public class LevelManager: MonoBehaviour
 
     public void Awake()
     {
-        gameObjectNameMap = new Dictionary<string, GameObject>()
+        gameObjectNameMap = new Dictionary<string, GameObject>
         {
             { "ball", ball },
             { "spawnPoint", new GameObject() },
@@ -37,7 +39,14 @@ public class LevelManager: MonoBehaviour
     
     private void Start()
     {
-        var jsonFile = (TextAsset)Resources.Load("level-1", typeof(TextAsset));
+        var jsonFile = (TextAsset)Resources.Load($"levels/level-{LevelUtils.CurrentLevel}", typeof(TextAsset));
+
+        if (jsonFile == null)
+        {
+            GameController.Default.PublishLevelError("Error in loading the next level, you might have finished all levels!");
+            return;
+        }
+
         var levelRoot = JsonUtility.FromJson<LevelRoot>(jsonFile.text);
 
         foreach (var gameObjectJson in levelRoot.gameObjects)

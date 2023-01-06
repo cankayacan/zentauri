@@ -9,6 +9,14 @@ public class GameController : Singleton<GameController>
 
     public event Action Out;
 
+    public event Action<string> LevelError;
+
+    public void NextLevel()
+    {
+        LevelUtils.NextLevel();
+        RestartGame();
+    }
+
     public void RestartGame()
     {
         finished = false;
@@ -33,5 +41,10 @@ public class GameController : Singleton<GameController>
         }
 
         finished = true;
+    }
+
+    public void PublishLevelError(string error)
+    {
+        LevelError?.Invoke(error);
     }
 }

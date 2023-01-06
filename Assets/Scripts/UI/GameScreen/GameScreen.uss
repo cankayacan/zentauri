@@ -1,0 +1,49 @@
+:root {
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.footer {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+    font-size: 20px;
+}
+
+.button {
+    border-color: rgb(255, 255, 255);
+    background-color: rgb(78, 124, 255);
+    color: rgb(255, 255, 255);
+    font-size: 24px;
+    border-radius: 16 16 0 16;
+    width: 300px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.error-container {
+    flex-direction: row;
+    align-items: center;
+}
+
+.error-image {
+    background-image: url('/Assets/UI/Images/status-warning-dark@2x.png');
+    width: 32px; 
+    height: 32px;
+}
+
+.error-label {
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+}
+
+.right-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
