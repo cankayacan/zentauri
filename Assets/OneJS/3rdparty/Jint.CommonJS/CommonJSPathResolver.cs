@@ -6,7 +6,8 @@ using UnityEngine;
 namespace Jint.CommonJS {
     public class CommonJSPathResolver : IModuleResolver {
 #if UNITY_EDITOR
-        private static readonly string WORKING_DIR = Path.Combine(Path.GetDirectoryName(Application.dataPath)!, "OneJS");
+        private static readonly string
+            WORKING_DIR = Path.Combine(Path.GetDirectoryName(Application.dataPath)!, "OneJS");
 #else
         private static readonly string WORKING_DIR = Path.Combine(Application.persistentDataPath, "OneJS");
 #endif
@@ -24,7 +25,7 @@ namespace Jint.CommonJS {
             // }
 
             // var cwd = parent.filePath != null ? Path.GetDirectoryName(parent.filePath) : Environment.CurrentDirectory;
-            var cwd = parent.filePath != null
+            var cwd = parent != null
                 ? Path.GetDirectoryName(parent.filePath)
                 : WORKING_DIR;
             var path = Path.GetFullPath(Path.Combine(cwd, moduleId));
@@ -37,13 +38,13 @@ namespace Jint.CommonJS {
              * - Try direct file in case an extension is provided
              * - if directory, return directory/index
              */
-            var pathMappings = new[] { "ScriptLib/3rdparty/", "ScriptLib/", "Addons/", "node_modules/", "" };
+            var pathMappings = new[] { "ScriptLib/3rdparty/", "ScriptLib/", "Addons/", "Modules/", "node_modules/", "" };
             var found = false;
             foreach (var pm in pathMappings) {
                 if (!moduleId.StartsWith("."))
                     path = Path.Combine(WORKING_DIR, pm + moduleId);
 
-                if (Directory.Exists(path)) {
+                if (Directory.Exists(path) && !File.Exists(path + ".js")) {
                     path = Path.Combine(path, "index");
                 }
 
@@ -64,7 +65,9 @@ namespace Jint.CommonJS {
             }
             if (!found)
                 throw new FileNotFoundException($"Module {path} could not be resolved.");
-            return path;
+            var file = new FileInfo(path);
+            // Debug.Log($"{moduleId} => {file.FullName}");
+            return file.FullName;
         }
     }
 }

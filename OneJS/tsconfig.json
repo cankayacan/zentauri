@@ -1,22 +1,16 @@
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "*": [
-                "ScriptLib/3rdparty/*",
-                "ScriptLib/*",
-                "Addons/*",
-                "*"
-            ]
-        },
-        "removeComments": true,
-        "jsx": "react",
-        "jsxFactory": "h",
-        "target": "es6",
-        "module": "commonjs",
-        "noImplicitUseStrict": true,
-        "lib": [
-            "ES6"
-        ]
-    }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "*": ["ScriptLib/3rdparty/*", "ScriptLib/*", "Addons/*", "*"]
+    },
+    "removeComments": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "target": "es6",
+    "module": "commonjs",
+    "noImplicitUseStrict": true,
+    "lib": ["ES6"],
+    "skipLibCheck": true
+  }
 }

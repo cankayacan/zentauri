@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ICSharpCode.SharpZipLib.GZip;
-using ICSharpCode.SharpZipLib.Tar;
 using Jint;
 using Jint.CommonJS;
-using Jint.Native;
 using Jint.Runtime.Interop;
 using NaughtyAttributes;
 using OneJS.Dom;
 using OneJS.Engine;
-using OneJS.Engine.JSGlobals;
 using OneJS.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -44,21 +39,22 @@ namespace OneJS {
 
     [Serializable]
     public class ObjectModulePair {
-        public UnityEngine.MonoBehaviour obj;
+        public UnityEngine.Object obj;
         public string module;
 
-        public ObjectModulePair(UnityEngine.MonoBehaviour obj, string m) {
+        public ObjectModulePair(UnityEngine.Object obj, string m) {
             this.obj = obj;
             this.module = m;
         }
     }
 
-    public class QueuedAction {
+    public struct QueuedAction {
         public DateTime dateTime;
         public Action action;
         public int id;
         public double timeout;
         public bool requeue;
+        public bool cleared;
 
         public QueuedAction(Action action, int id, double timeout, bool requeue = false) {
             this.dateTime = DateTime.Now.AddMilliseconds(timeout);
@@ -66,6 +62,11 @@ namespace OneJS {
             this.id = id;
             this.timeout = timeout;
             this.requeue = requeue;
+            cleared = false;
+        }
+
+        public void ResetDateTime() {
+            this.dateTime = DateTime.Now.AddMilliseconds(timeout);
         }
     }
 
@@ -90,6 +91,8 @@ namespace OneJS {
         public Dom.Document Document => _document;
         public Dom.Dom DocumentBody => _document.body;
         public int[] Breakpoints => _breakpoints;
+        public int Tick => _tick;
+        public DateTime StartTime { get; private set; }
 
         public event Action OnPostInit;
         public event Action OnReload;
@@ -130,12 +133,20 @@ namespace OneJS {
         StaticClassModulePair[] _staticClasses = new[]
             { new StaticClassModulePair("Unity.Mathematics.math", "math") };
 
-        [Foldout("INTEROP")] [Tooltip("Object to JS Module mapping.")] [PairMapping("obj", "module")] [SerializeField]
+        [Foldout("INTEROP")]
+        [Tooltip(
+            "Maps an Unity Object to a js module name (any string that you choose). Objects declared here will be accessible from Javascript via i.e. require(\"objname\"). You can also provide your own Type Definitions for better TS usage.")]
+        [PairMapping("obj", "module")] [SerializeField]
+        [InfoBox(
+            "The Objects list will now accept any UnityEngine.Object, not just MonoBehaviours. To pick a specific MonoBehaviour on a GameObject, you can Right-Click on the Inspector Tab of the GameObject and pick Properties. A standalone window will popup for you to drag the specifc MonoBehavior from.")]
         ObjectModulePair[] _objects = new ObjectModulePair[]
             { };
 
         [Foldout("INTEROP")] [Tooltip("Scripts that you want to load before everything else")] [SerializeField]
         List<string> _preloadedScripts = new List<string>();
+        
+        [Foldout("INTEROP")] [Tooltip("Allows you to catch .Net error from within JS.")] [SerializeField]
+        bool _catchDotNetExceptions = true;
 
         [Foldout("STYLING")]
         [Tooltip("Inculde here any global USS you'd need. OneJS also provides a default one.")]
@@ -163,19 +174,22 @@ namespace OneJS {
         Document _document;
         ModuleLoadingEngine _cjsEngine;
         Jint.Engine _engine;
+        AsyncEngine.AsyncContext _asyncContext;
 
         List<Action> _engineReloadJSHandlers = new List<Action>();
         List<IClassStrProcessor> _classStrProcessors = new List<IClassStrProcessor>();
         List<Type> _globalFuncTypes;
 
         int _currentActionId;
-        List<QueuedAction> _queuedActions = new List<QueuedAction>();
+        PriorityQueue<int, DateTime> _queuedActionIds = new PriorityQueue<int, DateTime>();
         Dictionary<int, QueuedAction> _queueLookup = new Dictionary<int, QueuedAction>();
 
         Assembly[] _loadedAssemblies;
 
         List<Action> _frameActions = new List<Action>();
         List<Action> _frameActionBuffer = new List<Action>();
+
+        int _tick = 0;
 
         public void Awake() {
             _uiDocument = GetComponent<UIDocument>();
@@ -202,25 +216,22 @@ namespace OneJS {
             }
             _frameActionBuffer.Clear();
 
-            int removeCount = 0;
-            for (int i = 0; i < _queuedActions.Count; i++) {
-                var qa = _queuedActions[i];
-                if (qa.dateTime > DateTime.Now) {
-                    break;
+            while (_queuedActionIds.Count > 0 && _queuedActionIds.TryPeek(out int _, out DateTime time) &&
+                   time <= DateTime.Now) {
+                var qaid = _queuedActionIds.Dequeue();
+                var qa = _queueLookup[qaid];
+                if (!qa.cleared) {
+                    qa.action();
+                    if (qa.requeue) {
+                        qa.ResetDateTime();
+                        _queueLookup[qa.id] = qa;
+                        _queuedActionIds.Enqueue(qa.id, qa.dateTime);
+                        continue;
+                    }
                 }
-                qa.action();
-                if (qa.requeue) {
-                    var newId = QueueAction(qa.action, qa.timeout, true);
-                    var newQA = _queueLookup[newId];
-                    newQA.id = qa.id;
-                    _queueLookup[qa.id] = newQA;
-                    _queueLookup.Remove(newId);
-                } else {
-                    _queueLookup.Remove(qa.id);
-                }
-                removeCount++;
+                _queueLookup.Remove(qa.id);
             }
-            _queuedActions.RemoveRange(0, removeCount);
+            _tick++;
         }
 
         public void RunScript(string scriptPath) {
@@ -268,14 +279,7 @@ namespace OneJS {
                 _queueLookup.Add(id, qa);
                 return id;
             }
-            var insertIndex = _queuedActions.Count;
-            for (int i = 0; i < _queuedActions.Count; i++) {
-                if (_queuedActions[i].dateTime > qa.dateTime) {
-                    insertIndex = i;
-                    break;
-                }
-            }
-            _queuedActions.Insert(insertIndex, qa);
+            _queuedActionIds.Enqueue(id, qa.dateTime);
             _queueLookup.Add(id, qa);
             return id;
         }
@@ -285,9 +289,8 @@ namespace OneJS {
                 if (queuedAction.timeout == 0) { // Instant Action was treated as frame action
                     ClearFrameAction(queuedAction.id);
                 }
-                _queuedActions
-                    .Remove(queuedAction); // TODO can be optimized because _queuedActions is sorted by dateTime
-                _queueLookup.Remove(id);
+                queuedAction.cleared = true;
+                _queueLookup[id] = queuedAction;
             }
         }
 
@@ -323,7 +326,7 @@ namespace OneJS {
             _engineReloadJSHandlers.ForEach((a) => { OnReload -= a; });
             _engineReloadJSHandlers.Clear();
 
-            _queuedActions.Clear();
+            _queuedActionIds.Clear();
             _queueLookup.Clear();
             _currentActionId = 0;
 
@@ -348,7 +351,7 @@ namespace OneJS {
         /// <returns>System.Type found by lowercase name.</returns>
         public System.Type FindVisualElementType(string typeName) {
             var typeNameL = typeName.ToLower();
-            foreach ( var assembly in _loadedAssemblies) {
+            foreach (var assembly in _loadedAssemblies) {
                 var typesToSearch = assembly.GetTypes();
                 var type = typesToSearch.Where(t => t.Name.ToLower() == typeNameL)
                     .FirstOrDefault();
@@ -358,9 +361,10 @@ namespace OneJS {
             }
             return null;
         }
+
         void InitEngine() {
-            _loadedAssemblies = _assemblies.Select((a) =>
-            {
+            StartTime = DateTime.Now;
+            _loadedAssemblies = _assemblies.Select((a) => {
 #if UNITY_2022_2_OR_NEWER
                 if (a == "UnityEngine.UIElementsNativeModule") {
                     return null;
@@ -375,6 +379,7 @@ namespace OneJS {
                 }
             }).Where(a => a != null).ToArray();
 
+            _asyncContext = new AsyncEngine.AsyncContext();
             _engine = new Jint.Engine(opts => {
                     opts.Interop.TrackObjectWrapperIdentity = false; // Unity too buggy with ConditionalWeakTable
                     opts.AllowClr(_loadedAssemblies);
@@ -385,8 +390,10 @@ namespace OneJS {
                                 $"ScriptEngine could not load extension \"{e}\". Please check your string(s) in the `extensions` array.");
                         opts.AddExtensionMethods(type);
                     });
-
+                    opts.AddObjectConverter(new AsyncEngine.TaskConverter(_asyncContext));
                     opts.AllowOperatorOverloading();
+
+                    if (_catchDotNetExceptions) opts.CatchClrExceptions();
                     if (_allowReflection) opts.Interop.AllowSystemReflection = true;
                     if (_allowGetType) opts.Interop.AllowGetType = true;
                     if (_memoryLimit > 0) opts.LimitMemory(_memoryLimit * 1000000);
@@ -399,7 +406,7 @@ namespace OneJS {
             SetupGlobals();
 
             foreach (var nsmp in _namespaces) {
-                _cjsEngine = _cjsEngine.RegisterInternalModule(nsmp.module,
+                _cjsEngine = _cjsEngine.RegisterInternalModule(nsmp.module, nsmp.module,
                     new NamespaceReference(_engine, nsmp.@namespace));
             }
             foreach (var scmp in _staticClasses) {
@@ -412,7 +419,6 @@ namespace OneJS {
             foreach (var omp in _objects) {
                 _cjsEngine = _cjsEngine.RegisterInternalModule(omp.module, omp.obj);
             }
-
             _uiDocument.rootVisualElement.Clear();
             _engine.SetValue("document", _document);
             OnPostInit?.Invoke();

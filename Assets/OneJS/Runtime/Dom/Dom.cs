@@ -15,31 +15,20 @@ namespace OneJS.Dom {
 
         public VisualElement ve => _ve;
 
-        public Dom parentNode {
-            get { return _parentNode; }
-        }
+        public Dom parentNode { get { return _parentNode; } }
 
-        public Dom nextSibling {
-            get { return _nextSibling; }
-        }
+        public Dom nextSibling { get { return _nextSibling; } }
 
         /// <summary>
         /// ECMA Compliant id property, stored in the VE.name
         /// </summary>
-        public string Id {
-            get { return _ve.name; }
-            set { _ve.name = value; }
-        }
+        public string Id { get { return _ve.name; } set { _ve.name = value; } }
 
         public DomStyle style => new DomStyle(this);
 
-        public object value {
-            get { return _value; }
-        }
+        public object value { get { return _value; } }
 
-        public bool @checked {
-            get { return _checked; }
-        }
+        public bool @checked { get { return _checked; } }
 
         public object data {
             get { return _data; }
@@ -51,16 +40,11 @@ namespace OneJS.Dom {
             }
         }
 
-        public string innerHTML {
-            get { return _innerHTML; }
-        }
+        public string innerHTML { get { return _innerHTML; } }
 
         public Vector2 layoutSize => _ve.layout.size;
 
-        public object _children {
-            get { return __children; }
-            set { __children = value; }
-        }
+        public object _children { get { return __children; } set { __children = value; } }
 
         // NOTE: Using `JsValue` here because `EventCallback<EventBase>` will lead to massive slowdown on Linux.
         // [props.ts] `dom._listeners[name + useCapture] = value;`
@@ -84,17 +68,21 @@ namespace OneJS.Dom {
         static Dictionary<string, RegisterCallbackDelegate> _eventCache =
             new Dictionary<string, RegisterCallbackDelegate>();
 
+        TickBasedCallTracker _tickBasedCallTracker;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Init() {
             _eventCache.Clear();
         }
 
-        public static void RegisterCallback<T>(VisualElement ve, EventCallback<T> callback)
+        public static void RegisterCallback<T>(VisualElement ve, EventCallback<T> callback,
+            TrickleDown trickleDown = TrickleDown.NoTrickleDown)
             where T : EventBase<T>, new() {
-            ve.RegisterCallback(callback);
+            ve.RegisterCallback(callback, trickleDown);
         }
 
-        public delegate void RegisterCallbackDelegate(VisualElement ve, EventCallback<EventBase> callback);
+        public delegate void RegisterCallbackDelegate(VisualElement ve, EventCallback<EventBase> callback,
+            TrickleDown trickleDown = TrickleDown.NoTrickleDown);
 
         // Not Used
         //public Dom(string tagName) {
@@ -107,10 +95,18 @@ namespace OneJS.Dom {
         }
 
         public void CallListener(string name, EventBase evt) {
-            var func = __listeners[name].As<FunctionInstance>();
-            var engine = _document.scriptEngine.JintEngine;
-            var thisDom = JsValue.FromObject(engine, this);
-            func.Call(thisDom, JsValue.FromObject(engine, evt));
+            // var func = __listeners[name].As<FunctionInstance>();
+            var tick = _document.scriptEngine.Tick;
+            _tickBasedCallTracker.count = _tickBasedCallTracker.tick == tick ? _tickBasedCallTracker.count + 1 : 0;
+            _tickBasedCallTracker.tick = tick;
+            if (_tickBasedCallTracker.count > 1000) {
+                Debug.LogError(
+                    $"Possible infinite loop detected. Event Listener(s) on {_ve.GetType().Name} called more than 1000 times in one frame.");
+                return;
+            }
+            var jintEngine = _document.scriptEngine.JintEngine;
+            var thisDom = JsValue.FromObject(jintEngine, this);
+            jintEngine.Call(__listeners[name], thisDom, new[] { JsValue.FromObject(jintEngine, evt) });
         }
 
         public void clearChildren() {
@@ -119,14 +115,17 @@ namespace OneJS.Dom {
 
         public void addEventListener(string name, JsValue jsval, bool useCapture = false) {
             // var t = DateTime.Now;
-            var func = jsval.As<FunctionInstance>();
+            // var func = jsval.As<FunctionInstance>();
             var engine = _document.scriptEngine.JintEngine;
             var thisDom = JsValue.FromObject(engine, this);
-            var callback = (EventCallback<EventBase>)((e) => { func.Call(thisDom, JsValue.FromObject(engine, e)); });
+            var callback = (EventCallback<EventBase>)((e) => {
+                engine.Call(jsval, thisDom, new[] { JsValue.FromObject(engine, e) });
+            });
             var isValueChanged = name == "ValueChanged";
 
             if (!isValueChanged && _eventCache.ContainsKey(name)) {
-                _eventCache[name](_ve, callback);
+                _eventCache[name](_ve, callback, TrickleDown.NoTrickleDown);
+                // Debug.Log("Registered " + name + " on " + _ve.name);
             } else {
                 var eventType = typeof(VisualElement).Assembly.GetType($"UnityEngine.UIElements.{name}Event");
                 if (isValueChanged) {
@@ -145,7 +144,8 @@ namespace OneJS.Dom {
                     var del = (RegisterCallbackDelegate)Delegate.CreateDelegate(typeof(RegisterCallbackDelegate), mi);
                     if (!isValueChanged)
                         _eventCache.Add(name, del);
-                    del(_ve, callback);
+                    del(_ve, callback, TrickleDown.NoTrickleDown);
+                    // Debug.Log("Registered " + name + " on " + _ve.name);
                 }
             }
 
@@ -199,6 +199,10 @@ namespace OneJS.Dom {
         }
 
         public void insertBefore(Dom a, Dom b) {
+            if (b == null || b.ve == null || _ve.IndexOf(b.ve) == -1) {
+                appendChild(a);
+                return;
+            }
             var index = _ve.IndexOf(b.ve);
             _ve.Insert(index, a.ve);
             _childNodes.Insert(index, a);
@@ -211,9 +215,13 @@ namespace OneJS.Dom {
 
         public void setAttribute(string name, object val) {
             if (name == "class" || name == "className") {
+                var unityClassnames = _ve.GetClasses().Where(c => c.StartsWith("unity-")).ToArray();
                 _ve.ClearClassList();
                 var unprocessedClassStr = _document.scriptEngine.ProcessClassStr(val.ToString(), this);
                 var parts = (unprocessedClassStr).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var unityClassname in unityClassnames) {
+                    _ve.AddToClassList(unityClassname);
+                }
                 foreach (var part in parts) {
                     _ve.AddToClassList(part);
                 }
@@ -252,6 +260,8 @@ namespace OneJS.Dom {
                         val = Convert.ToSingle(val);
                     } else if (pi.PropertyType == typeof(Int32) && val.GetType() == typeof(double)) {
                         val = Convert.ToInt32(val);
+                    } else if (pi.PropertyType == typeof(char) && val.GetType() == typeof(string)) {
+                        val = val.ToString()[0];
                     }
                     pi.SetValue(_ve, val);
                 }
@@ -303,6 +313,11 @@ namespace OneJS.Dom {
                 }
             }
             return null;
+        }
+
+        struct TickBasedCallTracker {
+            public int tick;
+            public int count;
         }
     }
 }
