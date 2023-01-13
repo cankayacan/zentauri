@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public enum CameraType
 {
@@ -27,12 +26,12 @@ public class CameraController: MonoBehaviour
             { CameraType.Shooting, shootingCamera },
             { CameraType.Finish, finishCamera },
         };
-
-        SwitchCamera(CameraType.Moving);
     }
 
     public void SwitchCamera(CameraType cameraType)
     {
+        if (cameras[cameraType].Priority == 1) return;
+
         foreach (var virtualCamera in cameras)
         {
             virtualCamera.Value.Priority = 0;

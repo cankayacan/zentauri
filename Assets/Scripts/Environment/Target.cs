@@ -23,7 +23,7 @@ public class Target: MonoBehaviour
         ballDetector.BallTouched -= OnBallTouched;
     }
 
-    private void OnBallTouched(GameObject part, GameObject ballGameObject)
+    protected virtual void OnBallTouched(GameObject part, GameObject ballGameObject)
     {
         meshRenderer.enabled = false;
         dissolveEffect.Play();

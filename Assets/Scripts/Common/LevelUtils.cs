@@ -1,7 +1,6 @@
-using NUglify;
 using UnityEngine;
 
-public class LevelUtils
+public static class LevelUtils
 {
     private const string LevelStorageKey = "currentLevel";
 

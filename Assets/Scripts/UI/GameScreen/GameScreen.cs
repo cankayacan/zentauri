@@ -7,6 +7,7 @@ public class GameScreen : MonoBehaviour
     private VisualElement errorContainerElement;
     private Button nextButton;
     private Button restartButton;
+    private Label pointsLabel;
 
     private void Awake()
     {
@@ -22,10 +23,19 @@ public class GameScreen : MonoBehaviour
         restartButton = rootVisualElement.Q<Button>("restart-button");
         restartButton.style.display = DisplayStyle.None;
         restartButton.RegisterCallback<ClickEvent>(HandleRestartButtonClick);
+        
+        pointsLabel = rootVisualElement.Q<Label>("points-label");
 
         GameController.Default.Goal += OnGoal;
         GameController.Default.Out += OnOut;
         GameController.Default.LevelError += OnLevelError;
+        
+        Debug.Log($"Points {PointUtils.CurrentPoints}");
+    }
+
+    private void Update()
+    {
+        pointsLabel.text = PointUtils.CurrentPoints.ToString();
     }
 
     private void OnDestroy()

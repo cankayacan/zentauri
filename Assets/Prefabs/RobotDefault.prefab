@@ -6261,7 +6261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc34444bec584b71810744d208036444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootSpeed: 30
+  shootSpeed: 27
 --- !u!143 &1216096057980662339
 CharacterController:
   m_ObjectHideFlags: 0
