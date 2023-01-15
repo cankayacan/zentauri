@@ -89,7 +89,7 @@ public class SwipeController : MonoBehaviour
         if (checkPoints.Count < 2) return;
 
         var furthestPoint = checkPoints
-            .OrderByDescending(x => HandleUtility.DistancePointToLine(x, startPosition, endPosition)).First();
+            .OrderByDescending(x => Utils.DistancePointToLine(x, startPosition, endPosition)).First();
 
         var curveDirection = (furthestPoint - startPosition).normalized;
         var shootDirection = (endPosition - startPosition).normalized;

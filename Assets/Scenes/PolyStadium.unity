@@ -3680,11 +3680,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerManager: {fileID: 1509684111}
   ball: {fileID: 8730849797983272262, guid: c2ab9bfd17300452998f49e23aab5537, type: 3}
-  target: {fileID: 1164723663979818, guid: 16a0b624de8ccef48a7ccbfd6f35d56f, type: 3}
   key: {fileID: 1930125013191846, guid: b2a695e06c2e5b2479e979dd3b2197e8, type: 3}
   star: {fileID: 1047522817194894, guid: 38bf683a040b90a4681baee96cb396ac, type: 3}
   coin: {fileID: 1423928566906578, guid: 494a0daefaadbc747a867c0b83a27403, type: 3}
-  wall: {fileID: 1460905088059818, guid: 682255724988b1541af0927787d8456e, type: 3}
+  wall2X301: {fileID: 1460905088059818, guid: 682255724988b1541af0927787d8456e, type: 3}
+  wallChamfered5X501: {fileID: 1731475190162634, guid: 9cb66282bdc82ac4292b250058ce03d6,
+    type: 3}
 --- !u!4 &340402809
 Transform:
   m_ObjectHideFlags: 0
@@ -23832,7 +23833,7 @@ Transform:
   - {fileID: 1381404858}
   - {fileID: 870281949}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1933796985 stripped
 Transform:
@@ -29075,7 +29076,7 @@ PrefabInstance:
     - target: {fileID: 8869195958910727557, guid: 7dd31d1dbddf74195a9fd7f193830e63,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8869195958910727557, guid: 7dd31d1dbddf74195a9fd7f193830e63,
         type: 3}

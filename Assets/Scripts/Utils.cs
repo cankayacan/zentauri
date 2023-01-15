@@ -33,6 +33,8 @@ public static class Utils
         var targetRotation = Utils.GetTargetQuaternion(transform.position, targetPosition);
         return Math.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y);
     }
+
+    public static float DistancePointToLine(Vector2 p, Vector2 a, Vector2 b) => Mathf.Abs((float) (((double) b.x - (double) a.x) * ((double) a.y - (double) p.y) - ((double) a.x - (double) p.x) * ((double) b.y - (double) a.y))) / (b - a).magnitude;
 }
 
 public static class VectorExtensions

@@ -8,7 +8,7 @@ public class LevelRoot
     public LevelGameObject[] gameObjects;
 }
 
-public class LevelComponent
+public abstract class LevelComponent
 {
     public string name;
     public dynamic props;
@@ -26,13 +26,13 @@ public class LevelGameObject
 
 public class LevelManager : MonoBehaviour
 {
+    private const string SpawnPointGameObjectName = "SpawnPoint";
+
     private int currentLevel;
 
     public PlayerManager playerManager;
 
     public GameObject ball;
-
-    public GameObject target;
 
     public GameObject key;
 
@@ -40,7 +40,9 @@ public class LevelManager : MonoBehaviour
 
     public GameObject coin;
 
-    public GameObject wall;
+    public GameObject wall2X301;
+
+    public GameObject wallChamfered5X501;
 
     private Dictionary<string, GameObject> gameObjectNameMap;
 
@@ -48,13 +50,13 @@ public class LevelManager : MonoBehaviour
     {
         gameObjectNameMap = new Dictionary<string, GameObject>
         {
-            { "ball", ball },
-            { "spawnPoint", new GameObject() },
-            { "target", target },
-            { "key", key },
-            { "star", star },
-            { "coin", coin },
-            { "wall", wall }
+            { "Ball", ball },
+            { SpawnPointGameObjectName, new GameObject() },
+            { "SM_Icon_Key_01", key },
+            { "SM_Icon_Star_02", star },
+            { "SM_Icon_Coin_02", coin },
+            { "SM_Buildings_Wall_2x3_01P", wall2X301 },
+            { "SM_Buildings_WallChamfered_5x5_01", wallChamfered5X501 }
         };
     }
 
@@ -94,7 +96,7 @@ public class LevelManager : MonoBehaviour
         var instantiatedGameObject = Instantiate(gameObjectPrefab, position, quaternion);
         instantiatedGameObject.transform.localScale = gameObjectJson.scale;
         
-        if (gameObjectJson.name == "spawnPoint")
+        if (gameObjectJson.name == SpawnPointGameObjectName)
         {
             playerManager.StartPlayer(position, quaternion);
         }
