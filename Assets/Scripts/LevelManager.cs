@@ -8,7 +8,7 @@ public class LevelRoot
     public LevelGameObject[] gameObjects;
 }
 
-public abstract class LevelComponent
+public class LevelComponent
 {
     public string name;
     public dynamic props;
