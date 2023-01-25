@@ -16,7 +16,9 @@ public class PlayerCharacterController : MonoBehaviour
     public bool grounded = true;
 
     [Tooltip("Useful for rough ground")]
-    public float groundedOffset = 0.01f;
+    const float originOffset = .01f;
+
+    Vector3 RaycastOrigin => transform.position + Vector3.up * originOffset;
 
     public void Awake()
     {
@@ -39,8 +41,11 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void CheckGrounded()
     {
-        grounded = transform.position.y <= characterController.skinWidth + groundedOffset;
-
+        var groundLayerMask = LayerMask.GetMask("Ground");
+        grounded = Physics.Raycast(RaycastOrigin, Vector3.down, originOffset * 2, groundLayerMask);
+        
+        Debug.Log($"Grounded {grounded}");
+        
         if (grounded) return;
 
         characterController.Move(Physics.gravity * Time.fixedDeltaTime);
