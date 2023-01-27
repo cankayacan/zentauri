@@ -4,10 +4,15 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerCharacterController : MonoBehaviour
 {
+    private int groundLayerMask;
+    private int ballLayerMask;
+
     private Vector3? lastPosition;
     private Animator animator;
     private CharacterController characterController;
     private PlayerStateController playerStateController;
+
+    private Vector3 RaycastOrigin => transform.position + Vector3.up * originOffset;
 
     public Vector3 speed;
 
@@ -16,12 +21,13 @@ public class PlayerCharacterController : MonoBehaviour
     public bool grounded = true;
 
     [Tooltip("Useful for rough ground")]
-    const float originOffset = .01f;
-
-    Vector3 RaycastOrigin => transform.position + Vector3.up * originOffset;
+    public const float originOffset = .01f;
 
     public void Awake()
     {
+        groundLayerMask = LayerMask.GetMask("Ground");
+        ballLayerMask = LayerMask.GetMask("Ball");
+    
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
         playerStateController = GetComponent<PlayerStateController>();
@@ -41,11 +47,8 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void CheckGrounded()
     {
-        var groundLayerMask = LayerMask.GetMask("Ground");
         grounded = Physics.Raycast(RaycastOrigin, Vector3.down, originOffset * 2, groundLayerMask);
-        
-        Debug.Log($"Grounded {grounded}");
-        
+
         if (grounded) return;
 
         characterController.Move(Physics.gravity * Time.fixedDeltaTime);
@@ -53,13 +56,11 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void CheckOnTopOfBall()
     {
-        var layerMask = LayerMask.GetMask("Ball");
-
         var playerPosition = transform.position;
 
         Debug.DrawRay(playerPosition, transform.up * -1, Color.blue);
 
-        if (Physics.Raycast(playerPosition, transform.up * -1, out RaycastHit hitInfo, Int32.MaxValue, layerMask))
+        if (Physics.Raycast(playerPosition, transform.up * -1, out RaycastHit hitInfo, Int32.MaxValue, ballLayerMask))
         {
             playerStateController.ChangeState(PlayerState.Dribbling);
             Debug.Log($"under ball {hitInfo.collider.name}");
